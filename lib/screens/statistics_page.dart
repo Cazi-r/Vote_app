@@ -14,18 +14,21 @@ class _StatisticsPageState extends State<StatisticsPage> {
       'options': ['Elma', 'Muz', 'Cilek'],
       'votes': [0, 0, 0],
       'icon': Icons.food_bank,
+      'color': Colors.green,
     },
     {
       'question': 'En sevdiginiz mevsim hangisidir?',
       'options': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
       'votes': [0, 0, 0, 0],
       'icon': Icons.wb_sunny,
+      'color': Colors.orange,
     },
     {
       'question': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
       'options': ['Futbol', 'Basketbol'],
       'votes': [0, 0],
       'icon': Icons.sports_soccer,
+      'color': Colors.blue,
     },
   ];
 
@@ -58,6 +61,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Istatistikler'),
       ),
       drawer: CustomDrawer(),
@@ -86,7 +90,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 Icon(
                   survey['icon'],
                   size: 28,
-                  color: Colors.blue,
+                  color: survey['color']
                 ),
                 SizedBox(width: 12),
                 Expanded(
@@ -152,6 +156,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       LinearProgressIndicator(
                         value: percentage / 100,
                         backgroundColor: Colors.grey[200],
+                        valueColor: AlwaysStoppedAnimation<Color>(survey['color']),
                         minHeight: 10,
                       ),
                     ],

@@ -3,11 +3,21 @@ import 'package:vote_app/widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SurveyPage extends StatefulWidget {
+  // Basit statik metod - anketleri sifirlama
+  static Future<void> resetSurveys() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Anket secimlerini temizle
+    for (int i = 0; i < 3; i++) {
+      prefs.remove('selectedOption_$i');
+    }
+  }
+
   @override
   _SurveyPageState createState() => _SurveyPageState();
 }
 
 class _SurveyPageState extends State<SurveyPage> {
+  // Sabit anket verileri
   List<Map<String, dynamic>> surveys = [
     {
       'question': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
@@ -44,25 +54,28 @@ class _SurveyPageState extends State<SurveyPage> {
     _loadSurveyData();
   }
 
+  // Anket verilerini yukle
   Future<void> _loadSurveyData() async {
     final prefs = await SharedPreferences.getInstance();
     
-    for (int i = 0; i < surveys.length; i++) {
-      final votesList = prefs.getStringList('votes_$i');
-      final selectedOption = prefs.getInt('selectedOption_$i');
-      
-      if (votesList != null && votesList.isNotEmpty) {
-        setState(() {
+    setState(() {
+      for (int i = 0; i < surveys.length; i++) {
+        final votesList = prefs.getStringList('votes_$i');
+        final selectedOption = prefs.getInt('selectedOption_$i');
+        
+        if (votesList != null && votesList.isNotEmpty) {
           surveys[i]['votes'] = votesList.map((e) => int.parse(e)).toList();
-          if (selectedOption != null) {
-            surveys[i]['selectedOption'] = selectedOption;
-            surveys[i]['voted'] = true;
-          }
-        });
+        }
+        
+        if (selectedOption != null) {
+          surveys[i]['selectedOption'] = selectedOption;
+          surveys[i]['voted'] = true;
+        }
       }
-    }
+    });
   }
 
+  // Oy verme fonksiyonu
   void vote(int surveyIndex, int optionIndex) async {
     setState(() {
       surveys[surveyIndex]['votes'][optionIndex]++;
@@ -71,11 +84,14 @@ class _SurveyPageState extends State<SurveyPage> {
     });
     
     final prefs = await SharedPreferences.getInstance();
-    List<String> votesList = surveys[surveyIndex]['votes'].map((e) => e.toString()).toList().cast<String>();
-    await prefs.setStringList('votes_$surveyIndex', votesList);
-    await prefs.setInt('selectedOption_$surveyIndex', optionIndex);
+    prefs.setStringList(
+      'votes_$surveyIndex', 
+      surveys[surveyIndex]['votes'].map<String>((e) => e.toString()).toList()
+    );
+    prefs.setInt('selectedOption_$surveyIndex', optionIndex);
   }
 
+  // Anketleri sifirla
   void refreshSurveys() {
     setState(() {
       for (var survey in surveys) {
@@ -95,6 +111,7 @@ class _SurveyPageState extends State<SurveyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Anketler'),
         actions: [
           IconButton(
@@ -112,6 +129,7 @@ class _SurveyPageState extends State<SurveyPage> {
     );
   }
   
+  // Anket karti olustur
   Widget _buildSurveyCard(int surveyIndex) {
     final survey = surveys[surveyIndex];
     final hasVoted = survey['voted'] == true;
@@ -121,31 +139,26 @@ class _SurveyPageState extends State<SurveyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ikon bölümü
-          Container(
-            height: 60,
-            color: survey['color'].withOpacity(0.1),
-            child: Center(
-              child: Icon(
-                survey['icon'], 
-                size: 30, 
-                color: survey['color']
-              ),
-            ),
-          ),
-          
-          // Anket sorusu
+          // Anket sorusu ve ikon
           Padding(
             padding: EdgeInsets.all(16),
-            child: Text(
-              survey['question'],
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            child: Row(
+              children: [
+                Icon(survey['icon'], size: 28, color: survey['color']),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    survey['question'],
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ),
           
           Divider(height: 1),
           
-          // Secenekler
+          // Secenekler listesi
           ...List.generate(
             survey['options'].length,
             (optionIndex) => _buildOptionItem(surveyIndex, optionIndex, hasVoted),
@@ -157,6 +170,7 @@ class _SurveyPageState extends State<SurveyPage> {
     );
   }
   
+  // Secenek ogesi olustur
   Widget _buildOptionItem(int surveyIndex, int optionIndex, bool hasVoted) {
     final survey = surveys[surveyIndex];
     final option = survey['options'][optionIndex];
@@ -169,15 +183,15 @@ class _SurveyPageState extends State<SurveyPage> {
         child: Row(
           children: [
             // Secim ikonu
-            hasVoted
-              ? Icon(
-                  isSelected ? Icons.check_circle : Icons.circle_outlined,
-                  color: isSelected ? survey['color'] : Colors.grey,
-                )
-              : Icon(Icons.radio_button_unchecked),
-            
+            Icon(
+              hasVoted
+                ? (isSelected ? Icons.check_circle : Icons.circle_outlined)
+                : Icons.radio_button_unchecked,
+              color: hasVoted && isSelected ? survey['color'] : Colors.grey,
+            ),
+
             SizedBox(width: 16),
-            
+
             // Secenek metni
             Text(
               option,
