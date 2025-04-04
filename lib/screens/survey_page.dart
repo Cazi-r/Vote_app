@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote_app/widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vote_app/theme/app_theme.dart';
 
 class SurveyPage extends StatefulWidget {
   @override
@@ -11,31 +10,31 @@ class SurveyPage extends StatefulWidget {
 class _SurveyPageState extends State<SurveyPage> {
   List<Map<String, dynamic>> surveys = [
     {
-      'question': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
-      'options': ['Elma', 'Muz', 'Çilek'],
+      'question': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
+      'options': ['Elma', 'Muz', 'Cilek'],
       'votes': [0, 0, 0],
       'voted': false,
+      'selectedOption': null,
       'icon': Icons.food_bank,
       'color': Colors.green,
-      'selectedOption': null,
     },
     {
-      'question': 'En sevdiğiniz mevsim hangisidir?',
-      'options': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
+      'question': 'En sevdiginiz mevsim hangisidir?',
+      'options': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
       'votes': [0, 0, 0, 0],
       'voted': false,
-      'icon': Icons.palette,
-      'color': Colors.orange,
       'selectedOption': null,
+      'icon': Icons.wb_sunny,
+      'color': Colors.orange,
     },
     {
-      'question': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
+      'question': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
       'options': ['Futbol', 'Basketbol'],
       'votes': [0, 0],
       'voted': false,
+      'selectedOption': null,
       'icon': Icons.sports_soccer,
       'color': Colors.blue,
-      'selectedOption': null,
     },
   ];
 
@@ -105,13 +104,10 @@ class _SurveyPageState extends State<SurveyPage> {
         ],
       ),
       drawer: CustomDrawer(),
-      body: Container(
-        decoration: AppTheme.gradientBackground(context),
-        child: ListView.builder(
-          padding: EdgeInsets.all(16),
-          itemCount: surveys.length,
-          itemBuilder: (context, index) => _buildSurveyCard(index),
-        ),
+      body: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: surveys.length,
+        itemBuilder: (context, index) => _buildSurveyCard(index),
       ),
     );
   }
@@ -122,30 +118,37 @@ class _SurveyPageState extends State<SurveyPage> {
     
     return Card(
       margin: EdgeInsets.only(bottom: 16),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
+          // Ikon bölümü
           Container(
-            height: 80,
-            color: survey['color'].withOpacity(0.2),
+            height: 60,
+            color: survey['color'].withOpacity(0.1),
             child: Center(
-              child: Icon(survey['icon'], size: 50, color: survey['color']),
+              child: Icon(
+                survey['icon'], 
+                size: 30, 
+                color: survey['color']
+              ),
             ),
           ),
           
+          // Anket sorusu
           Padding(
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(16),
             child: Text(
               survey['question'],
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           
+          Divider(height: 1),
+          
+          // Secenekler
           ...List.generate(
             survey['options'].length,
-            (optionIndex) => _buildOptionTile(surveyIndex, optionIndex, hasVoted),
+            (optionIndex) => _buildOptionItem(surveyIndex, optionIndex, hasVoted),
           ),
           
           SizedBox(height: 8),
@@ -154,28 +157,43 @@ class _SurveyPageState extends State<SurveyPage> {
     );
   }
   
-  Widget _buildOptionTile(int surveyIndex, int optionIndex, bool hasVoted) {
+  Widget _buildOptionItem(int surveyIndex, int optionIndex, bool hasVoted) {
     final survey = surveys[surveyIndex];
     final option = survey['options'][optionIndex];
     final isSelected = survey['selectedOption'] == optionIndex;
     
-    return ListTile(
-      title: Text(
-        option,
-        style: TextStyle(
-          color: hasVoted ? Colors.grey : Colors.black87,
+    return InkWell(
+      onTap: hasVoted ? null : () => vote(surveyIndex, optionIndex),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Row(
+          children: [
+            // Secim ikonu
+            hasVoted
+              ? Icon(
+                  isSelected ? Icons.check_circle : Icons.circle_outlined,
+                  color: isSelected ? survey['color'] : Colors.grey,
+                )
+              : Icon(Icons.radio_button_unchecked),
+            
+            SizedBox(width: 16),
+            
+            // Secenek metni
+            Text(
+              option,
+              style: TextStyle(
+                color: hasVoted && !isSelected ? Colors.grey : Colors.black,
+              ),
+            ),
+            
+            // Oy sayisi
+            if (hasVoted) ...[
+              Spacer(),
+              Text('${survey['votes'][optionIndex]} oy'),
+            ],
+          ],
         ),
       ),
-      leading: hasVoted
-          ? Icon(
-              isSelected ? Icons.check_circle : Icons.circle_outlined,
-              color: isSelected ? survey['color'] : Colors.grey,
-            )
-          : null,
-      trailing: hasVoted
-          ? Text('${survey['votes'][optionIndex]} oy')
-          : Icon(Icons.arrow_forward_ios, size: 14),
-      onTap: hasVoted ? null : () => vote(surveyIndex, optionIndex),
     );
   }
 }

@@ -1,64 +1,55 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.network(
-                  logoUrl,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Anket Uygulaması',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          // Baslik alani
+          Container(
+            height: 80,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            color: Colors.blue,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Anket Uygulamasi',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
 
+          // Ana sayfa
           ListTile(
-            leading: Icon(Icons.home, color: AppTheme.primaryColor),
+            leading: Icon(Icons.home),
             title: Text('Ana Sayfa'),
             onTap: () => Navigator.pushReplacementNamed(context, '/home'),
           ),
 
+          // Anketler
           ListTile(
-            leading: Icon(Icons.poll, color: AppTheme.primaryColor),
+            leading: Icon(Icons.poll),
             title: Text('Anketler'),
             onTap: () => Navigator.pushReplacementNamed(context, '/survey'),
           ),
 
+          // Istatistikler
           ListTile(
-            leading: Icon(Icons.bar_chart, color: AppTheme.primaryColor),
-            title: Text('İstatistikler'),
+            leading: Icon(Icons.bar_chart),
+            title: Text('Istatistikler'),
             onTap: () => Navigator.pushReplacementNamed(context, '/statistics'),
           ),
           
           Divider(),
           
+          // Cikis
           ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
-            title: Text('Çıkış'),
+            title: Text('Cikis'),
             onTap: () => Navigator.pushReplacementNamed(context, '/'),
           ),
         ],

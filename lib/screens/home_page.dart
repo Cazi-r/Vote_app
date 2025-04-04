@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vote_app/theme/app_theme.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -31,79 +30,89 @@ class _HomePageState extends State<HomePage> {
         title: Text("Ana Sayfa"),
       ),
       drawer: CustomDrawer(),
-      body: Container(
-        decoration: AppTheme.gradientBackground(context),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        userId != null 
-                            ? 'Hoşgeldiniz\nTC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}'
-                            : 'Hoşgeldiniz',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Kullanici bilgisi
+            if (userId != null)
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(0xA494B1D2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-              
-              SizedBox(height: 24),
-              
-              Center(
-                child: Text(
-                  'Hızlı Erişim Menüsü',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              
-              SizedBox(height: 16),
-              
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
+                child: Row(
                   children: [
-                    _buildFeatureCard(
-                      context,
-                      Icons.poll,
-                      'Anketler',
-                      'Mevcut anketlere eriş ve oy kullan',
-                      () => Navigator.pushNamed(context, '/survey'),
+                    CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      child: Icon(Icons.person, color: Colors.white, size: 24),
                     ),
-                    _buildFeatureCard(
-                      context, 
-                      Icons.bar_chart, 
-                      'İstatistikler', 
-                      'Anket sonuçlarını incele',
-                      () => Navigator.pushNamed(context, '/statistics'),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hosgeldiniz',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}',
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            
+            SizedBox(height: 24),
+            
+            // Hizli erisim baslik
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Row(
+                children: [
+                  Icon(Icons.dashboard, size: 24, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Text(
+                    'Hizli Erisim',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Anketler butonu
+            _buildNavigationButton(
+              context,
+              Icons.poll,
+              'Anketler',
+              'Mevcut anketlere eris ve oy kullan',
+              () => Navigator.pushNamed(context, '/survey'),
+            ),
+            
+            SizedBox(height: 12),
+            
+            // Istatistikler butonu
+            _buildNavigationButton(
+              context,
+              Icons.bar_chart,
+              'Istatistikler',
+              'Anket sonuclarini incele',
+              () => Navigator.pushNamed(context, '/statistics'),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildFeatureCard(
+  Widget _buildNavigationButton(
     BuildContext context,
     IconData icon,
     String title,
@@ -112,48 +121,40 @@ class _HomePageState extends State<HomePage> {
   ) {
     return InkWell(
       onTap: onTap,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 40,
-                color: Theme.of(context).primaryColor,
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.blue.withOpacity(0.2),
+              radius: 20,
+              child: Icon(icon, size: 24, color: Colors.blue),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
               ),
-              SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
+            ),
+            Icon(Icons.arrow_forward_ios, size: 16),
+          ],
         ),
       ),
-    );
-  }
-
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
     );
   }
 }
