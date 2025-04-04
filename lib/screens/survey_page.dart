@@ -56,7 +56,7 @@ class SurveyPageState extends State<SurveyPage> {
   // Kayitli verileri yukle
   void verileriYukle() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    
+
     setState(() {
       for (int i = 0; i < anketler.length; i++) {
         // Oy verilerini yukle
@@ -68,7 +68,7 @@ class SurveyPageState extends State<SurveyPage> {
           }
           anketler[i]['oylar'] = oylar;
         }
-        
+
         // Secili secenek bilgisini yukle
         final secilenIndex = prefs.getInt('selectedOption_$i');
         if (secilenIndex != null) {
@@ -88,17 +88,17 @@ class SurveyPageState extends State<SurveyPage> {
       anketler[anketIndex]['oyVerildi'] = true;
       anketler[anketIndex]['secilenSecenek'] = secenekIndex;
     });
-    
+
     // Veriyi kaydet
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    
+
     // Oy listesini kaydet
     List<String> oyListesi = [];
     for (int oy in anketler[anketIndex]['oylar']) {
       oyListesi.add(oy.toString());
     }
     prefs.setStringList('votes_$anketIndex', oyListesi);
-    
+
     // Secilen secenegi kaydet
     prefs.setInt('selectedOption_$anketIndex', secenekIndex);
   }
@@ -111,11 +111,11 @@ class SurveyPageState extends State<SurveyPage> {
         anket['secilenSecenek'] = null;
       }
     });
-    
+
     // Veriyi temizle
     await SurveyPage.resetSurveys();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,12 +139,12 @@ class SurveyPageState extends State<SurveyPage> {
       ),
     );
   }
-  
+
   // Anket karti olusturma
   Widget anketKartiOlustur(int anketIndex) {
     Map<String, dynamic> anket = anketler[anketIndex];
     bool oyVerildi = anket['oyVerildi'] == true;
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Column(
@@ -160,42 +160,43 @@ class SurveyPageState extends State<SurveyPage> {
                 Expanded(
                   child: Text(
                     anket['soru'],
-                    style: TextStyle(
-                      fontSize: 16, 
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
             ),
           ),
-          
+
           Divider(height: 1),
-          
+
           // Secenekler listesi
           Column(
             children: List.generate(
               anket['secenekler'].length,
-              (secenekIndex) => secenekSatiriOlustur(anketIndex, secenekIndex, oyVerildi),
+              (secenekIndex) =>
+                  secenekSatiriOlustur(anketIndex, secenekIndex, oyVerildi),
             ),
           ),
-          
+
           SizedBox(height: 8),
         ],
       ),
     );
   }
-  
+
   // Secenek satiri olusturma
-  Widget secenekSatiriOlustur(int anketIndex, int secenekIndex, bool oyVerildi) {
+  Widget secenekSatiriOlustur(
+      int anketIndex, int secenekIndex, bool oyVerildi) {
     Map<String, dynamic> anket = anketler[anketIndex];
     String secenek = anket['secenekler'][secenekIndex];
     bool secili = anket['secilenSecenek'] == secenekIndex;
-    
+
     return InkWell(
-      onTap: oyVerildi ? null : () {
-        oyVer(anketIndex, secenekIndex);
-      },
+      onTap: oyVerildi
+          ? null
+          : () {
+              oyVer(anketIndex, secenekIndex);
+            },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
@@ -203,8 +204,8 @@ class SurveyPageState extends State<SurveyPage> {
             // Secenek ikonu
             Icon(
               oyVerildi
-                ? (secili ? Icons.check_circle : Icons.circle_outlined)
-                : Icons.radio_button_unchecked,
+                  ? (secili ? Icons.check_circle : Icons.circle_outlined)
+                  : Icons.radio_button_unchecked,
               color: oyVerildi && secili ? anket['renk'] : Colors.grey,
             ),
 
@@ -217,7 +218,7 @@ class SurveyPageState extends State<SurveyPage> {
                 color: oyVerildi && !secili ? Colors.grey : Colors.black,
               ),
             ),
-            
+
             // Oy sayisi
             if (oyVerildi) ...[
               Spacer(),

@@ -49,12 +49,10 @@ class _LoginPageState extends State<LoginPage> {
               TextField(
                 controller: tcController,
                 decoration: InputDecoration(
-                  labelText: "TC Kimlik No",
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)
-                  )
-                ),
+                    labelText: "TC Kimlik No",
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10))),
                 keyboardType: TextInputType.number,
                 maxLength: 11,
               ),
@@ -67,8 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                   labelText: "Sifre",
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10)
-                  ),
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
               SizedBox(height: 24),
@@ -76,12 +73,10 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: yukleniyor ? null : girisYap,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  minimumSize: Size(double.infinity, 50)
-                ),
-                child: Text('Giris Yap',style: TextStyle(fontSize: 18)
-                ),
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    minimumSize: Size(double.infinity, 50)),
+                child: Text('Giris Yap', style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -114,15 +109,15 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       yukleniyor = true;
     });
-    
+
     try {
       // Kullanici ID'sini kaydet
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('user_id', tcController.text);
-      
+
       // Anketleri sifirla
       await SurveyPage.resetSurveys();
-      
+
       // Ana sayfaya git
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
@@ -134,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
-  
+
   // Hata mesaji goster
   void mesajGoster(String baslik, String mesaj) {
     showDialog(

@@ -38,35 +38,33 @@ class _HomePageState extends State<HomePage> {
           children: [
             // Kullanici kart bilgisi
             if (userId != null) kullaniciKartiOlustur(),
-            
+
             SizedBox(height: 20),
             Divider(),
             SizedBox(height: 20),
 
             // Baslik bolumu
             baslikSatiri('Hizli Erisim', Icons.dashboard),
-            
+
             // Anketlere git butonu
             menuButonu(
-              ikon: Icons.poll,
-              baslik: 'Anketler',
-              aciklama: 'Anketlere eris ve oy kullan',
-              tiklamaFonksiyonu: () {
-                Navigator.pushNamed(context, '/survey');
-              }
-            ),
-            
+                ikon: Icons.poll,
+                baslik: 'Anketler',
+                aciklama: 'Anketlere eris ve oy kullan',
+                tiklamaFonksiyonu: () {
+                  Navigator.pushNamed(context, '/survey');
+                }),
+
             SizedBox(height: 10),
-            
+
             // Istatistiklere git butonu
             menuButonu(
-              ikon: Icons.bar_chart,
-              baslik: 'Istatistikler',
-              aciklama: 'Anket sonuclarini incele',
-              tiklamaFonksiyonu: () {
-                Navigator.pushNamed(context, '/statistics');
-              }
-            ),
+                ikon: Icons.bar_chart,
+                baslik: 'Istatistikler',
+                aciklama: 'Anket sonuclarini incele',
+                tiklamaFonksiyonu: () {
+                  Navigator.pushNamed(context, '/statistics');
+                }),
           ],
         ),
       ),
@@ -140,12 +138,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Menu butonu
-  Widget menuButonu({
-    required IconData ikon,
-    required String baslik,
-    required String aciklama,
-    required Function tiklamaFonksiyonu
-  }) {
+  Widget menuButonu(
+      {required IconData ikon,
+      required String baslik,
+      required String aciklama,
+      required Function tiklamaFonksiyonu}) {
     return ElevatedButton(
       onPressed: () => tiklamaFonksiyonu(),
       style: ElevatedButton.styleFrom(

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
   // Logo URL
-  final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
-  
+  final String logoUrl =
+      'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -35,7 +36,6 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           ),
-
           ListTile(
             leading: Icon(Icons.home, color: Colors.blue),
             title: Text('Ana Sayfa'),
@@ -43,7 +43,6 @@ class CustomDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/home');
             },
           ),
-
           ListTile(
             leading: Icon(Icons.poll, color: Colors.blue),
             title: Text('Anketler'),
@@ -51,7 +50,6 @@ class CustomDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/survey');
             },
           ),
-
           ListTile(
             leading: Icon(Icons.bar_chart, color: Colors.blue),
             title: Text('Istatistikler'),
@@ -59,9 +57,7 @@ class CustomDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/statistics');
             },
           ),
-          
           Divider(),
-
           ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
             title: Text('Cikis'),

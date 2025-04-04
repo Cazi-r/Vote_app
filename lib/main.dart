@@ -20,8 +20,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/survey': (context) => SurveyPage(),
         '/statistics': (context) => StatisticsPage(),
-
-        
       },
     );
   }

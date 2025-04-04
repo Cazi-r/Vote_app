@@ -42,11 +42,11 @@ class StatisticsPageState extends State<StatisticsPage> {
   // Kayitli oy verilerini yukle
   void verileriYukle() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    
+
     for (int i = 0; i < anketler.length; i++) {
       // Oy listesini cekelim
       List<String>? oyListesi = prefs.getStringList('votes_$i');
-      
+
       // Eger veri varsa yukleme yapalim
       if (oyListesi != null && oyListesi.isNotEmpty) {
         try {
@@ -55,7 +55,7 @@ class StatisticsPageState extends State<StatisticsPage> {
           for (String oy in oyListesi) {
             oylar.add(int.parse(oy));
           }
-          
+
           // State'i guncelleyelim
           setState(() {
             anketler[i]['oylar'] = oylar;
@@ -66,7 +66,7 @@ class StatisticsPageState extends State<StatisticsPage> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,18 +84,18 @@ class StatisticsPageState extends State<StatisticsPage> {
       ),
     );
   }
-  
+
   // Istatistik karti olusturma
   Widget istatistikKartiOlustur(int anketIndex) {
     Map<String, dynamic> anket = anketler[anketIndex];
-    
+
     // Toplam oy sayisini hesapla
     int toplamOy = 0;
     List<int> oylar = anket['oylar'];
     for (int oy in oylar) {
       toplamOy += oy;
     }
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Padding(
@@ -111,17 +111,14 @@ class StatisticsPageState extends State<StatisticsPage> {
                 Expanded(
                   child: Text(
                     anket['soru'],
-                    style: TextStyle(
-                      fontSize: 16, 
-                      fontWeight: FontWeight.bold
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
             ),
-            
+
             SizedBox(height: 12),
-            
+
             // Toplam oy bilgisi
             Text(
               'Toplam: $toplamOy oy',
@@ -129,45 +126,33 @@ class StatisticsPageState extends State<StatisticsPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            
+
             SizedBox(height: 16),
-            
-            // Oy verilmemis durumu
-            if (toplamOy == 0)
-              Center(
-                child: Text(
-                  'Henuz oy verilmemis',
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey,
-                  ),
-                ),
-              )
-            // Oy sonuclari
-            else
-              Column(
-                children: secenek_sonuclarini_olustur(anket, toplamOy),
-              ),
+
+            Column(
+              children: secenek_sonuclarini_olustur(anket, toplamOy),
+            ),
           ],
         ),
       ),
     );
   }
-  
+
   // Secenek sonuclarini olusturma
-  List<Widget> secenek_sonuclarini_olustur(Map<String, dynamic> anket, int toplamOy) {
+  List<Widget> secenek_sonuclarini_olustur(
+      Map<String, dynamic> anket, int toplamOy) {
     List<Widget> sonuclar = [];
-    
+
     for (int i = 0; i < anket['secenekler'].length; i++) {
       String secenek = anket['secenekler'][i];
       int oySayisi = anket['oylar'][i];
-      
+
       // Yuzdelik hesaplama
       double yuzde = 0;
       if (toplamOy > 0) {
         yuzde = (oySayisi / toplamOy) * 100;
       }
-      
+
       // Secenek sonuc widgeti
       Widget sonucWidget = Padding(
         padding: EdgeInsets.only(bottom: 12),
@@ -182,9 +167,9 @@ class StatisticsPageState extends State<StatisticsPage> {
                 Text('$oySayisi (${yuzde.toStringAsFixed(0)}%)'),
               ],
             ),
-            
+
             SizedBox(height: 4),
-            
+
             // Oy cubugu
             LinearProgressIndicator(
               value: yuzde / 100,
@@ -195,10 +180,10 @@ class StatisticsPageState extends State<StatisticsPage> {
           ],
         ),
       );
-      
+
       sonuclar.add(sonucWidget);
     }
-    
+
     return sonuclar;
   }
 }
