@@ -4,81 +4,70 @@ class CustomDrawer extends StatelessWidget {
   // Logo URL
   final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
   
-  // Renk paleti
-  static const colors = {
-    'primary': Color(0xFF4A6FE5),
-    'accent': Color(0xFF8C61FF),
-    'background': Color(0xFFF6F8FC),
-    'cardBg': Color(0xFFEEF2FD),
-    'textColor': Color(0xFF2E3A59),
-  };
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: colors['background'],
+      backgroundColor: Colors.grey[100],
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // Baslik alani
-          Container(
-            height: 160,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: colors['primary'],
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Logo
                 Image.network(
                   logoUrl,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.contain,
+                  height: 70,
+                  width: 70,
                 ),
-                SizedBox(height: 8),
-                // Baslik
+                SizedBox(height: 10),
                 Text(
-                  'Anket Uygulaması',
+                  'Anket Uygulamasi',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
 
-          // Ana sayfa
           ListTile(
-            leading: Icon(Icons.home, color: colors['accent']),
-            title: Text('Ana Sayfa', style: TextStyle(color: colors['textColor'])),
-            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+            leading: Icon(Icons.home, color: Colors.blue),
+            title: Text('Ana Sayfa'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/home');
+            },
           ),
 
-          // Anketler
           ListTile(
-            leading: Icon(Icons.poll, color: colors['accent']),
-            title: Text('Anketler', style: TextStyle(color: colors['textColor'])),
-            onTap: () => Navigator.pushReplacementNamed(context, '/survey'),
+            leading: Icon(Icons.poll, color: Colors.blue),
+            title: Text('Anketler'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/survey');
+            },
           ),
 
-          // Istatistikler
           ListTile(
-            leading: Icon(Icons.bar_chart, color: colors['accent']),
-            title: Text('İstatistikler', style: TextStyle(color: colors['textColor'])),
-            onTap: () => Navigator.pushReplacementNamed(context, '/statistics'),
+            leading: Icon(Icons.bar_chart, color: Colors.blue),
+            title: Text('Istatistikler'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/statistics');
+            },
           ),
           
-          Divider(color: colors['textColor']!.withOpacity(0.2)),
-          
-          // Cikis
+          Divider(),
+
           ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
-            title: Text('Çıkış', style: TextStyle(color: colors['textColor'])),
-            onTap: () => Navigator.pushReplacementNamed(context, '/'),
+            title: Text('Cikis'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
           ),
         ],
       ),

@@ -1,62 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:vote_app/widgets/custom_drawer.dart';
+import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StatisticsPage extends StatefulWidget {
   @override
-  _StatisticsPageState createState() => _StatisticsPageState();
+  State<StatisticsPage> createState() => StatisticsPageState();
 }
 
-class _StatisticsPageState extends State<StatisticsPage> {
-  List<Map<String, dynamic>> surveys = [
+class StatisticsPageState extends State<StatisticsPage> {
+  // Anket verileri
+  List<Map<String, dynamic>> anketler = [
     {
-      'question': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
-      'options': ['Elma', 'Muz', 'Cilek'],
-      'votes': [0, 0, 0],
-      'icon': Icons.food_bank,
-      'color': Colors.green,
+      'soru': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
+      'secenekler': ['Elma', 'Muz', 'Cilek'],
+      'oylar': [0, 0, 0],
+      'ikon': Icons.food_bank,
+      'renk': Colors.green,
     },
     {
-      'question': 'En sevdiginiz mevsim hangisidir?',
-      'options': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
-      'votes': [0, 0, 0, 0],
-      'icon': Icons.wb_sunny,
-      'color': Colors.orange,
+      'soru': 'En sevdiginiz mevsim hangisidir?',
+      'secenekler': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
+      'oylar': [0, 0, 0, 0],
+      'ikon': Icons.wb_sunny,
+      'renk': Colors.orange,
     },
     {
-      'question': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
-      'options': ['Futbol', 'Basketbol'],
-      'votes': [0, 0],
-      'icon': Icons.sports_soccer,
-      'color': Colors.blue,
+      'soru': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
+      'secenekler': ['Futbol', 'Basketbol'],
+      'oylar': [0, 0],
+      'ikon': Icons.sports_soccer,
+      'renk': Colors.blue,
     },
   ];
 
   @override
   void initState() {
     super.initState();
-    _loadSurveyData();
+    verileriYukle();
   }
 
-  Future<void> _loadSurveyData() async {
-    final prefs = await SharedPreferences.getInstance();
+  // Kayitli oy verilerini yukle
+  void verileriYukle() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     
-    for (int i = 0; i < surveys.length; i++) {
-      final votesStr = prefs.getStringList('votes_$i');
+    for (int i = 0; i < anketler.length; i++) {
+      // Oy listesini cekelim
+      List<String>? oyListesi = prefs.getStringList('votes_$i');
       
-      if (votesStr != null && votesStr.isNotEmpty) {
+      // Eger veri varsa yukleme yapalim
+      if (oyListesi != null && oyListesi.isNotEmpty) {
         try {
-          List<int> loadedVotes = votesStr.map((e) => int.parse(e)).toList();
+          // String'den int'e donusturme
+          List<int> oylar = [];
+          for (String oy in oyListesi) {
+            oylar.add(int.parse(oy));
+          }
+          
+          // State'i guncelleyelim
           setState(() {
-            surveys[i]['votes'] = loadedVotes;
+            anketler[i]['oylar'] = oylar;
           });
         } catch (e) {
-          print("Oy yuklerken hata: $e");
+          print("Oy verilerini yuklerken hata: $e");
         }
       }
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,15 +77,24 @@ class _StatisticsPageState extends State<StatisticsPage> {
       drawer: CustomDrawer(),
       body: ListView.builder(
         padding: EdgeInsets.all(16),
-        itemCount: surveys.length,
-        itemBuilder: (context, index) => _buildStatisticsCard(index),
+        itemCount: anketler.length,
+        itemBuilder: (context, index) {
+          return istatistikKartiOlustur(index);
+        },
       ),
     );
   }
-
-  Widget _buildStatisticsCard(int surveyIndex) {
-    final survey = surveys[surveyIndex];
-    final int totalVotes = survey['votes'].fold(0, (sum, vote) => sum + vote);
+  
+  // Istatistik karti olusturma
+  Widget istatistikKartiOlustur(int anketIndex) {
+    Map<String, dynamic> anket = anketler[anketIndex];
+    
+    // Toplam oy sayisini hesapla
+    int toplamOy = 0;
+    List<int> oylar = anket['oylar'];
+    for (int oy in oylar) {
+      toplamOy += oy;
+    }
     
     return Card(
       margin: EdgeInsets.only(bottom: 16),
@@ -84,18 +103,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Anket sorusu
+            // Soru basligi
             Row(
               children: [
-                Icon(
-                  survey['icon'],
-                  size: 28,
-                  color: survey['color']
-                ),
+                Icon(anket['ikon'], size: 28, color: anket['renk']),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    survey['question'],
+                    anket['soru'],
                     style: TextStyle(
                       fontSize: 16, 
                       fontWeight: FontWeight.bold
@@ -107,9 +122,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
             
             SizedBox(height: 12),
             
-            // Toplam oy
+            // Toplam oy bilgisi
             Text(
-              'Toplam: $totalVotes oy',
+              'Toplam: $toplamOy oy',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -118,7 +133,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             SizedBox(height: 16),
             
             // Oy verilmemis durumu
-            if (totalVotes == 0)
+            if (toplamOy == 0)
               Center(
                 child: Text(
                   'Henuz oy verilmemis',
@@ -130,42 +145,60 @@ class _StatisticsPageState extends State<StatisticsPage> {
               )
             // Oy sonuclari
             else
-              ...List.generate(survey['options'].length, (optionIndex) {
-                final int voteCount = survey['votes'][optionIndex];
-                final double percentage = totalVotes > 0 
-                  ? voteCount / totalVotes * 100 
-                  : 0;
-                
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Secenek ve oy sayisi
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(survey['options'][optionIndex]),
-                          Text('$voteCount (${percentage.toStringAsFixed(0)}%)'),
-                        ],
-                      ),
-                      
-                      SizedBox(height: 4),
-                      
-                      // Oy cubugu
-                      LinearProgressIndicator(
-                        value: percentage / 100,
-                        backgroundColor: Colors.grey[200],
-                        valueColor: AlwaysStoppedAnimation<Color>(survey['color']),
-                        minHeight: 10,
-                      ),
-                    ],
-                  ),
-                );
-              }),
+              Column(
+                children: secenek_sonuclarini_olustur(anket, toplamOy),
+              ),
           ],
         ),
       ),
     );
+  }
+  
+  // Secenek sonuclarini olusturma
+  List<Widget> secenek_sonuclarini_olustur(Map<String, dynamic> anket, int toplamOy) {
+    List<Widget> sonuclar = [];
+    
+    for (int i = 0; i < anket['secenekler'].length; i++) {
+      String secenek = anket['secenekler'][i];
+      int oySayisi = anket['oylar'][i];
+      
+      // Yuzdelik hesaplama
+      double yuzde = 0;
+      if (toplamOy > 0) {
+        yuzde = (oySayisi / toplamOy) * 100;
+      }
+      
+      // Secenek sonuc widgeti
+      Widget sonucWidget = Padding(
+        padding: EdgeInsets.only(bottom: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Secenek ve oy sayisi
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(secenek),
+                Text('$oySayisi (${yuzde.toStringAsFixed(0)}%)'),
+              ],
+            ),
+            
+            SizedBox(height: 4),
+            
+            // Oy cubugu
+            LinearProgressIndicator(
+              value: yuzde / 100,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(anket['renk']),
+              minHeight: 10,
+            ),
+          ],
+        ),
+      );
+      
+      sonuclar.add(sonucWidget);
+    }
+    
+    return sonuclar;
   }
 }

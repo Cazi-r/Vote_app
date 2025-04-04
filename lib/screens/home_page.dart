@@ -4,120 +4,186 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   String? userId;
-  static const colors = {
-    'primary': Color(0xFF4A6FE5),
-    'accent': Color(0xFF8C61FF),
-    'background': Color(0xFFF6F8FC),
-    'cardBg': Color(0xFFEEF2FD),
-    'textColor': Color(0xFF2E3A59),
-  };
 
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance()
-      .then((prefs) => setState(() => userId = prefs.getString('user_id')));
+    kullaniciIdGetir();
+  }
+
+  void kullaniciIdGetir() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id');
+    });
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Colors.white,
-    appBar: AppBar(backgroundColor: colors['primary'], title: Text("Ana Sayfa")),
-    drawer: CustomDrawer(),
-    body: Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (userId != null) _buildUserCard(),
-          SizedBox(height: 24),
-          _buildSectionTitle('Hızlı Erişim', Icons.dashboard),
-          _buildNavButton(Icons.poll, 'Anketler', 'Anketlere eris ve oy kullan',
-            () => Navigator.pushNamed(context, '/survey')),
-          SizedBox(height: 12),
-          _buildNavButton(Icons.bar_chart, 'İstatistikler', 'Anket sonuclarini incele',
-            () => Navigator.pushNamed(context, '/statistics')),
-        ],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text("Ana Sayfa"),
       ),
-    ),
-  );
-
-  Widget _buildUserCard() => Container(
-    padding: EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: colors['cardBg'],
-      borderRadius: BorderRadius.circular(8),
-      boxShadow: [BoxShadow(
-        color: Colors.black12,
-        blurRadius: 10,
-        offset: Offset(0, 2),
-      )],
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          backgroundColor: colors['primary'],
-          child: Icon(Icons.person, color: Colors.white),
-        ),
-        SizedBox(width: 12),
-        Column(
+      drawer: CustomDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Hoşgeldiniz', 
-              style: TextStyle(fontWeight: FontWeight.bold, color: colors['textColor'])),
-            SizedBox(height: 4),
-            Text('TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}',
-              style: TextStyle(color: colors['textColor']!.withOpacity(0.7))),
+            // Kullanici kart bilgisi
+            if (userId != null) kullaniciKartiOlustur(),
+            
+            SizedBox(height: 20),
+            Divider(),
+            SizedBox(height: 20),
+
+            // Baslik bolumu
+            baslikSatiri('Hizli Erisim', Icons.dashboard),
+            
+            // Anketlere git butonu
+            menuButonu(
+              ikon: Icons.poll,
+              baslik: 'Anketler',
+              aciklama: 'Anketlere eris ve oy kullan',
+              tiklamaFonksiyonu: () {
+                Navigator.pushNamed(context, '/survey');
+              }
+            ),
+            
+            SizedBox(height: 10),
+            
+            // Istatistiklere git butonu
+            menuButonu(
+              ikon: Icons.bar_chart,
+              baslik: 'Istatistikler',
+              aciklama: 'Anket sonuclarini incele',
+              tiklamaFonksiyonu: () {
+                Navigator.pushNamed(context, '/statistics');
+              }
+            ),
           ],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 
-  Widget _buildSectionTitle(String title, IconData icon) => Padding(
-    padding: EdgeInsets.only(bottom: 16),
-    child: Row(
-      children: [
-        Icon(icon, color: colors['accent']),
-        SizedBox(width: 8),
-        Text(title, style: TextStyle(
-          fontSize: 18, 
-          fontWeight: FontWeight.bold,
-          color: colors['textColor'],
-        )),
-      ],
-    ),
-  );
-
-  Widget _buildNavButton(IconData icon, String title, String description, VoidCallback onTap) => ElevatedButton(
-    onPressed: onTap,
-    style: ElevatedButton.styleFrom(
+  // Kullanici karti
+  Widget kullaniciKartiOlustur() {
+    return Container(
       padding: EdgeInsets.all(16),
-      backgroundColor: Colors.white,
-      foregroundColor: colors['textColor'],
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    ),
-    child: Row(
-      children: [
-        Icon(icon, color: colors['accent'], size: 30),
-        SizedBox(width: 16),
-        Expanded(
-          child: Column(
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          )
+        ],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.blue,
+            child: Icon(Icons.person, color: Colors.white),
+          ),
+          SizedBox(width: 12),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(description, style: TextStyle(fontSize: 12, color: colors['textColor']!.withOpacity(0.6))),
+              Text(
+                'Hosgeldiniz',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                'TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                ),
+              ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  // Baslik satiri
+  Widget baslikSatiri(String baslik, IconData ikon) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          Icon(ikon, color: Colors.blue),
+          SizedBox(width: 8),
+          Text(
+            baslik,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Menu butonu
+  Widget menuButonu({
+    required IconData ikon,
+    required String baslik,
+    required String aciklama,
+    required Function tiklamaFonksiyonu
+  }) {
+    return ElevatedButton(
+      onPressed: () => tiklamaFonksiyonu(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        padding: EdgeInsets.all(16),
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        Icon(Icons.arrow_forward_ios, size: 16, color: colors['primary']!.withOpacity(0.5)),
-      ],
-    ),
-  );
+      ),
+      child: Row(
+        children: [
+          Icon(ikon, color: Colors.blue, size: 24),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  baslik,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  aciklama,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward, color: Colors.grey, size: 16),
+        ],
+      ),
+    );
+  }
 }
