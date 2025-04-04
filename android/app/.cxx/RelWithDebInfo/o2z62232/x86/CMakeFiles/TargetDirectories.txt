@@ -1,0 +1,2 @@
+C:/Users/panda/Desktop/Git-hub/Vote_app/android/app/.cxx/RelWithDebInfo/o2z62232/x86/CMakeFiles/edit_cache.dir
+C:/Users/panda/Desktop/Git-hub/Vote_app/android/app/.cxx/RelWithDebInfo/o2z62232/x86/CMakeFiles/rebuild_cache.dir
