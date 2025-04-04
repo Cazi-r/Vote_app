@@ -3,7 +3,8 @@ import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SurveyPage extends StatefulWidget {
-  // Anketleri sifirlama metodu
+  // Kullanıcı oturumları arasında anket verilerini sıfırlamak için kullanılan statik metot
+  // SharedPreferences'dan tüm anket seçimlerini temizler
   static Future<void> resetSurveys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('selectedOption_0');
@@ -16,11 +17,12 @@ class SurveyPage extends StatefulWidget {
 }
 
 class SurveyPageState extends State<SurveyPage> {
-  // Anket verileri
+  // Anket verileri listesi - Her anket bir Map olarak tanımlanmıştır
+  // Her Map içerisinde soru metni, seçenekler, oy sayıları, kullanıcı tercihi, görsel öğeler bulunur
   List<Map<String, dynamic>> anketler = [
     {
-      'soru': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Cilek'],
+      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
+      'secenekler': ['Elma', 'Muz', 'Çilek'],
       'oylar': [0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
@@ -28,8 +30,8 @@ class SurveyPageState extends State<SurveyPage> {
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiginiz mevsim hangisidir?',
-      'secenekler': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
+      'soru': 'En sevdiğiniz mevsim hangisidir?',
+      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
       'oylar': [0, 0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
@@ -37,7 +39,7 @@ class SurveyPageState extends State<SurveyPage> {
       'renk': Colors.orange,
     },
     {
-      'soru': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
+      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
       'secenekler': ['Futbol', 'Basketbol'],
       'oylar': [0, 0],
       'oyVerildi': false,
@@ -53,13 +55,15 @@ class SurveyPageState extends State<SurveyPage> {
     verileriYukle();
   }
 
-  // Kayitli verileri yukle
+  // SharedPreferences'dan kayıtlı anket verilerini (oylar ve kullanıcı tercihleri) yükler
+  // İlk çalıştırmada veya veri yoksa varsayılan değerler kullanılır
   void verileriYukle() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
       for (int i = 0; i < anketler.length; i++) {
-        // Oy verilerini yukle
+        // Önceden kaydedilmiş oy sayılarını yükle
+        // 'votes_0', 'votes_1', 'votes_2' şeklinde saklanan string listelerini alır
         final oyListesi = prefs.getStringList('votes_$i');
         if (oyListesi != null) {
           List<int> oylar = [];
@@ -69,7 +73,8 @@ class SurveyPageState extends State<SurveyPage> {
           anketler[i]['oylar'] = oylar;
         }
 
-        // Secili secenek bilgisini yukle
+        // Kullanıcının daha önce seçtiği seçeneği yükle
+        // 'selectedOption_0', 'selectedOption_1', 'selectedOption_2' şeklinde saklanır
         final secilenIndex = prefs.getInt('selectedOption_$i');
         if (secilenIndex != null) {
           anketler[i]['secilenSecenek'] = secilenIndex;
@@ -79,31 +84,34 @@ class SurveyPageState extends State<SurveyPage> {
     });
   }
 
-  // Oy verme islemi
+  // Kullanıcı bir seçeneği seçtiğinde çağrılan metot
+  // Seçilen seçeneğin oy sayısını artırır ve kullanıcı tercihini kaydeder
   void oyVer(int anketIndex, int secenekIndex) async {
     setState(() {
-      // Oyu bir arttir
+      // Seçilen seçeneğin oy sayısını bir artır
       anketler[anketIndex]['oylar'][secenekIndex]++;
-      // Secildi olarak isaretle
+      // Bu anket için kullanıcının oy verdiğini işaretle ve seçimini kaydet
       anketler[anketIndex]['oyVerildi'] = true;
       anketler[anketIndex]['secilenSecenek'] = secenekIndex;
     });
 
-    // Veriyi kaydet
+    // Yeni oy durumunu kalıcı olarak kaydet
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Oy listesini kaydet
+    // Güncellenmiş oy sayılarını SharedPreferences'a kaydet
+    // Int listesi direkt kaydedilemediği için string listesine dönüştürülür
     List<String> oyListesi = [];
     for (int oy in anketler[anketIndex]['oylar']) {
       oyListesi.add(oy.toString());
     }
     prefs.setStringList('votes_$anketIndex', oyListesi);
 
-    // Secilen secenegi kaydet
+    // Kullanıcının seçtiği seçeneği SharedPreferences'a kaydet
     prefs.setInt('selectedOption_$anketIndex', secenekIndex);
   }
 
-  // Anketleri sifirla
+  // Tüm anketleri sıfırlama işlemi - AppBar'daki refresh butonuna basıldığında çağrılır
+  // Kullanıcının seçimlerini temizler, ancak toplam oy sayılarını korur
   void anketleriSifirla() async {
     setState(() {
       for (var anket in anketler) {
@@ -112,7 +120,7 @@ class SurveyPageState extends State<SurveyPage> {
       }
     });
 
-    // Veriyi temizle
+    // Kayıtlı kullanıcı tercihlerini SharedPreferences'dan sil
     await SurveyPage.resetSurveys();
   }
 
@@ -123,6 +131,7 @@ class SurveyPageState extends State<SurveyPage> {
         backgroundColor: Colors.blue,
         title: Text('Anketler'),
         actions: [
+          // Anketleri sıfırlama butonu - kullanıcının seçimlerini temizler
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: anketleriSifirla,
@@ -140,7 +149,8 @@ class SurveyPageState extends State<SurveyPage> {
     );
   }
 
-  // Anket karti olusturma
+  // Anket kartını oluşturan widget metodu
+  // Her anket için başlık, simge ve seçenekleri içeren kart oluşturur
   Widget anketKartiOlustur(int anketIndex) {
     Map<String, dynamic> anket = anketler[anketIndex];
     bool oyVerildi = anket['oyVerildi'] == true;
@@ -150,7 +160,8 @@ class SurveyPageState extends State<SurveyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Soru basligi
+          // Soru başlığı ve anket ikonu
+          // Başlık üst kısmında anketin konusuyla ilgili bir ikon ve soru metni bulunur
           Padding(
             padding: EdgeInsets.all(16),
             child: Row(
@@ -169,7 +180,8 @@ class SurveyPageState extends State<SurveyPage> {
 
           Divider(height: 1),
 
-          // Secenekler listesi
+          // Anket seçenekleri listesi
+          // Anketin tüm seçeneklerini ayrı satırlar halinde alt alta listeler
           Column(
             children: List.generate(
               anket['secenekler'].length,
@@ -184,7 +196,8 @@ class SurveyPageState extends State<SurveyPage> {
     );
   }
 
-  // Secenek satiri olusturma
+  // Her seçenek için ayrı bir satır oluşturan widget metodu
+  // Seçenek adını, seçim durumunu ve oy verilmiş ise oy sayısını gösterir
   Widget secenekSatiriOlustur(
       int anketIndex, int secenekIndex, bool oyVerildi) {
     Map<String, dynamic> anket = anketler[anketIndex];
@@ -192,6 +205,7 @@ class SurveyPageState extends State<SurveyPage> {
     bool secili = anket['secilenSecenek'] == secenekIndex;
 
     return InkWell(
+      // Kullanıcı daha önce oy verdiyse tıklama devre dışı bırakılır
       onTap: oyVerildi
           ? null
           : () {
@@ -201,7 +215,10 @@ class SurveyPageState extends State<SurveyPage> {
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
           children: [
-            // Secenek ikonu
+            // Seçenek durumunu gösteren ikon
+            // Oy verilmediyse: boş daire
+            // Oy verildi ve bu seçenek seçildiyse: dolu onay ikonu
+            // Oy verildi ama bu seçenek seçilmediyse: boş daire
             Icon(
               oyVerildi
                   ? (secili ? Icons.check_circle : Icons.circle_outlined)
@@ -211,7 +228,8 @@ class SurveyPageState extends State<SurveyPage> {
 
             SizedBox(width: 16),
 
-            // Secenek metni
+            // Seçenek adı/metni
+            // Seçilmemiş seçenekler soluk gösterilir
             Text(
               secenek,
               style: TextStyle(
@@ -219,7 +237,8 @@ class SurveyPageState extends State<SurveyPage> {
               ),
             ),
 
-            // Oy sayisi
+            // Oy sayısı göstergesi - sadece oy verilmişse gösterilir
+            // Kullanıcı oy verdikten sonra her seçeneğin toplam oy sayısı görünür olur
             if (oyVerildi) ...[
               Spacer(),
               Text('${anket['oylar'][secenekIndex]} oy'),

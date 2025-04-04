@@ -8,6 +8,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Giriş yapan kullanıcının ID bilgisi (TC kimlik numarası)
+  // SharedPreferences'dan yüklenir ve kullanıcı bilgisi kartında kullanılır
   String? userId;
 
   @override
@@ -16,6 +18,8 @@ class _HomePageState extends State<HomePage> {
     kullaniciIdGetir();
   }
 
+  // Kullanıcı kimlik bilgisini SharedPreferences'dan yükleyen metot
+  // Giriş yapıldığında LoginPage tarafından kaydedilen 'user_id' değerini alır
   void kullaniciIdGetir() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -30,38 +34,42 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blue,
         title: Text("Ana Sayfa"),
       ),
+      // Yan menü çekmecesi - uygulama içi navigasyonu sağlar
       drawer: CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kullanici kart bilgisi
+            // Kullanıcı bilgi kartı - sadece kullanıcı giriş yapmışsa gösterilir
+            // TC kimlik numarasının bir kısmını gizleyerek güvenli şekilde gösterir
             if (userId != null) kullaniciKartiOlustur(),
 
             SizedBox(height: 20),
             Divider(),
             SizedBox(height: 20),
 
-            // Baslik bolumu
-            baslikSatiri('Hizli Erisim', Icons.dashboard),
+            // Ana menü başlık bölümü - hızlı erişim seçeneklerini tanıtır
+            baslikSatiri('Hızlı Erişim', Icons.dashboard),
 
-            // Anketlere git butonu
+            // Anket sayfasına giden navigasyon butonu
+            // Kullanıcının mevcut anketlere erişmesini ve oy kullanmasını sağlar
             menuButonu(
                 ikon: Icons.poll,
                 baslik: 'Anketler',
-                aciklama: 'Anketlere eris ve oy kullan',
+                aciklama: 'Anketlere eriş ve oy kullan',
                 tiklamaFonksiyonu: () {
                   Navigator.pushNamed(context, '/survey');
                 }),
 
             SizedBox(height: 10),
 
-            // Istatistiklere git butonu
+            // İstatistik sayfasına giden navigasyon butonu
+            // Kullanıcının anket sonuçlarını ve istatistikleri görüntülemesini sağlar
             menuButonu(
                 ikon: Icons.bar_chart,
-                baslik: 'Istatistikler',
-                aciklama: 'Anket sonuclarini incele',
+                baslik: 'İstatistikler',
+                aciklama: 'Anket sonuçlarını incele',
                 tiklamaFonksiyonu: () {
                   Navigator.pushNamed(context, '/statistics');
                 }),
@@ -71,7 +79,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Kullanici karti
+  // Kullanıcı bilgilerini gösteren kart widget'ı
+  // Giriş yapan kullanıcının karşılama mesajı ve kısmi gizlenmiş TC kimlik numarasını içerir
   Widget kullaniciKartiOlustur() {
     return Container(
       padding: EdgeInsets.all(16),
@@ -88,6 +97,7 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
+          // Kullanıcı avatarı - ikon olarak gösterilir
           CircleAvatar(
             backgroundColor: Colors.blue,
             child: Icon(Icons.person, color: Colors.white),
@@ -96,13 +106,16 @@ class _HomePageState extends State<HomePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Kullanıcı karşılama mesajı
               Text(
-                'Hosgeldiniz',
+                'Hoşgeldiniz',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
+              // Kısmi gizlenmiş TC kimlik numarası 
+              // Örnek: İlk 3 hane ve son 3 hane gösterilir, ortası yıldızlarla gizlenir
               Text(
                 'TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}',
                 style: TextStyle(
@@ -117,7 +130,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Baslik satiri
+  // Başlık satırını oluşturan yardımcı metot
+  // Bölüm başlıklarını ikon ile birlikte gösterir
   Widget baslikSatiri(String baslik, IconData ikon) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
@@ -137,7 +151,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Menu butonu
+  // Menü butonlarını oluşturan yardımcı metot
+  // Farklı bölümlere giden butonlar için tutarlı bir görünüm ve davranış sağlar
+  // Her buton bir ikon, başlık, açıklama içerir ve tıklandığında ilgili sayfaya yönlendirir
   Widget menuButonu(
       {required IconData ikon,
       required String baslik,
@@ -155,12 +171,14 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
+          // Menü öğesi ikonu - her öğe için farklı ve anlamlı ikonlar kullanılır
           Icon(ikon, color: Colors.blue, size: 24),
           SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Menü başlığı
                 Text(
                   baslik,
                   style: TextStyle(
@@ -168,6 +186,7 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                // Menü açıklaması - kullanıcıya öğenin amacını açıklar
                 Text(
                   aciklama,
                   style: TextStyle(
@@ -178,6 +197,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          // İleri git ikonu - kullanıcıya butonun başka bir sayfaya yönlendireceğini gösterir
           Icon(Icons.arrow_forward, color: Colors.grey, size: 16),
         ],
       ),

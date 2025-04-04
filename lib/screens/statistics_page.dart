@@ -8,24 +8,25 @@ class StatisticsPage extends StatefulWidget {
 }
 
 class StatisticsPageState extends State<StatisticsPage> {
-  // Anket verileri
+  // Anket verileri listesi - Survey sayfasındaki anketlerle aynı format ve içeriğe sahip
+  // Ancak burada sadece gösterim amaçlı olduğu için 'oyVerildi' ve 'secilenSecenek' alanları yok
   List<Map<String, dynamic>> anketler = [
     {
-      'soru': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Cilek'],
+      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
+      'secenekler': ['Elma', 'Muz', 'Çilek'],
       'oylar': [0, 0, 0],
       'ikon': Icons.food_bank,
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiginiz mevsim hangisidir?',
-      'secenekler': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
+      'soru': 'En sevdiğiniz mevsim hangisidir?',
+      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
       'oylar': [0, 0, 0, 0],
       'ikon': Icons.wb_sunny,
       'renk': Colors.orange,
     },
     {
-      'soru': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
+      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
       'secenekler': ['Futbol', 'Basketbol'],
       'oylar': [0, 0],
       'ikon': Icons.sports_soccer,
@@ -39,29 +40,30 @@ class StatisticsPageState extends State<StatisticsPage> {
     verileriYukle();
   }
 
-  // Kayitli oy verilerini yukle
+  // SharedPreferences'dan kaydedilmiş oy verilerini yükler
+  // Bu metot sayfa açıldığında çağrılır ve tüm anketlerin güncel oy durumlarını gösterir
   void verileriYukle() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     for (int i = 0; i < anketler.length; i++) {
-      // Oy listesini cekelim
+      // Oy verilerini içeren string listesini ('votes_0', 'votes_1', 'votes_2' anahtarlarıyla) yükle
       List<String>? oyListesi = prefs.getStringList('votes_$i');
 
-      // Eger veri varsa yukleme yapalim
+      // Veri varsa ve boş değilse işleme devam et
       if (oyListesi != null && oyListesi.isNotEmpty) {
         try {
-          // String'den int'e donusturme
+          // String listesini int listesine dönüştür (SharedPreferences int listesi saklamadığı için)
           List<int> oylar = [];
           for (String oy in oyListesi) {
             oylar.add(int.parse(oy));
           }
 
-          // State'i guncelleyelim
+          // Anket verisini güncel oy sayılarıyla güncelle
           setState(() {
             anketler[i]['oylar'] = oylar;
           });
         } catch (e) {
-          print("Oy verilerini yuklerken hata: $e");
+          print("Oy verilerini yüklerken hata: $e");
         }
       }
     }
@@ -72,7 +74,7 @@ class StatisticsPageState extends State<StatisticsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Istatistikler'),
+        title: Text('İstatistikler'),
       ),
       drawer: CustomDrawer(),
       body: ListView.builder(
@@ -85,11 +87,13 @@ class StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // Istatistik karti olusturma
+  // İstatistik kartını oluşturan widget metodu
+  // Her anket için soru, toplam oy sayısı ve seçeneklerin durumunu gösteren kart oluşturur
   Widget istatistikKartiOlustur(int anketIndex) {
     Map<String, dynamic> anket = anketler[anketIndex];
 
-    // Toplam oy sayisini hesapla
+    // Tüm seçeneklerin aldığı toplam oy sayısını hesapla
+    // Bu değer hem gösterim için kullanılır hem de yüzde hesaplarında payda olarak kullanılır
     int toplamOy = 0;
     List<int> oylar = anket['oylar'];
     for (int oy in oylar) {
@@ -103,7 +107,8 @@ class StatisticsPageState extends State<StatisticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Soru basligi
+            // Anket sorusu ve ikonu - kart başlığı
+            // Anketin içeriğini temsil eden ikon ve soru metni
             Row(
               children: [
                 Icon(anket['ikon'], size: 28, color: anket['renk']),
@@ -119,7 +124,8 @@ class StatisticsPageState extends State<StatisticsPage> {
 
             SizedBox(height: 12),
 
-            // Toplam oy bilgisi
+            // Ankete verilen toplam oy sayısı bilgisi
+            // Hiç oy verilmediyse 0 gösterilir
             Text(
               'Toplam: $toplamOy oy',
               style: TextStyle(
@@ -129,6 +135,8 @@ class StatisticsPageState extends State<StatisticsPage> {
 
             SizedBox(height: 16),
 
+            // Tüm seçeneklerin sonuçlarını içeren widget listesi
+            // Her seçenek için oy sayısı, yüzdesi ve ilerlemesi gösterilir
             Column(
               children: secenek_sonuclarini_olustur(anket, toplamOy),
             ),
@@ -138,7 +146,8 @@ class StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // Secenek sonuclarini olusturma
+  // Her seçenek için ayrı sonuç satırı widget'ları oluşturan metot
+  // Seçenek adı, oy sayısı, yüzdesi ve grafiksel gösterimini içerir
   List<Widget> secenek_sonuclarini_olustur(
       Map<String, dynamic> anket, int toplamOy) {
     List<Widget> sonuclar = [];
@@ -147,19 +156,21 @@ class StatisticsPageState extends State<StatisticsPage> {
       String secenek = anket['secenekler'][i];
       int oySayisi = anket['oylar'][i];
 
-      // Yuzdelik hesaplama
+      // Seçeneğin aldığı oyun toplam oylara oranını yüzde olarak hesapla
+      // Toplam oy yoksa yüzde sıfır olacaktır
       double yuzde = 0;
       if (toplamOy > 0) {
         yuzde = (oySayisi / toplamOy) * 100;
       }
 
-      // Secenek sonuc widgeti
+      // Her seçenek için oy bilgisi ve ilerleme çubuğu içeren widget
       Widget sonucWidget = Padding(
         padding: EdgeInsets.only(bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Secenek ve oy sayisi
+            // Seçenek adı, oy sayısı ve yüzde bilgisi
+            // Örnek: "Elma: 5 (50%)"
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -170,7 +181,8 @@ class StatisticsPageState extends State<StatisticsPage> {
 
             SizedBox(height: 4),
 
-            // Oy cubugu
+            // Oyun yüzdesini görsel olarak temsil eden ilerleme çubuğu
+            // Her seçenek için anketin renginde bir çubuk gösterilir
             LinearProgressIndicator(
               value: yuzde / 100,
               backgroundColor: Colors.grey[200],
