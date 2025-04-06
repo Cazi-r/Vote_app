@@ -12,90 +12,68 @@ Bu proje, kullanıcıların TC kimlik numaralarıyla giriş yapıp çeşitli ank
 
 ## Ekran Görüntüleri
 
-<div style="margin-bottom: 20px;">
-  <h3>Giriş Sayfası</h3>
-  <div style="display: flex; align-items: center;">
-    <img src="images/Login.png" alt="Giriş Sayfası" width="300"/>
-    <div style="margin-left: 20px;">
-      <p>Giriş sayfasında kullanıcılar:</p>
-      <ul>
-        <li>TC kimlik numarası giriş alanı</li>
-        <li>Şifre giriş alanı</li>
-        <li>Giriş yapma butonu</li>
-        <li>Uygulama logosu</li>
-      </ul>
-      <p>TC kimlik numarası 11 haneli olmalı ve ilk rakamı 0 olmamalıdır.</p>
-    </div>
-  </div>
-</div>
+### 1. Giriş Sayfası
+![Giriş Sayfası](images/Login.png)
 
-<div style="margin-bottom: 20px;">
-  <h3>Ana Sayfa</h3>
-  <div style="display: flex; align-items: center;">
-    <img src="images/Home.png" alt="Ana Sayfa" width="300"/>
-    <div style="margin-left: 20px;">
-      <p>Ana sayfada kullanıcılar:</p>
-      <ul>
-        <li>Karşılama mesajı ve kısmi gizlenmiş TC numarası</li>
-        <li>Anketler ve İstatistikler sayfalarına erişim butonları</li>
-        <li>Sayfa üst kısmında menü erişimi</li>
-      </ul>
-      <p>Hızlı erişim butonları ve kullanıcı bilgileri ile ana ekrandan kolay navigasyon.</p>
-    </div>
-  </div>
-</div>
+**Giriş sayfasında kullanıcılar:**
+- TC kimlik numarası giriş alanı
+- Şifre giriş alanı
+- Giriş yapma butonu
+- Uygulama logosu
 
-<div style="margin-bottom: 20px;">
-  <h3>Drawer Menü</h3>
-  <div style="display: flex; align-items: center;">
-    <img src="images/Drawer.png" alt="Drawer Menü" width="300"/>
-    <div style="margin-left: 20px;">
-      <p>Drawer menüde:</p>
-      <ul>
-        <li>Uygulama logosu ve ismi</li>
-        <li>Ana Sayfa menü öğesi</li>
-        <li>Anketler menü öğesi</li>
-        <li>İstatistikler menü öğesi</li>
-        <li>Çıkış butonuyla oturum kapatma</li>
-      </ul>
-      <p>Yan menü sayesinde uygulama içinde kolay gezinme sağlanır.</p>
-    </div>
-  </div>
-</div>
+TC kimlik numarası 11 haneli olmalı ve ilk rakamı 0 olmamalıdır.
 
-<div style="margin-bottom: 20px;">
-  <h3>Anketler Sayfası</h3>
-  <div style="display: flex; align-items: center;">
-    <img src="images/surveys.png" alt="Anketler Sayfası" width="300"/>
-    <div style="margin-left: 20px;">
-      <p>Anketler sayfasında:</p>
-      <ul>
-        <li>Mevcut anketlerin liste halinde gösterimi</li>
-        <li>Her anket için farklı seçenekler</li>
-        <li>Kullanıcının daha önce oy verip vermediği bilgisi</li>
-        <li>Oy verdikten sonra sonuçların görüntülenmesi</li>
-      </ul>
-      <p>Kullanıcılar her ankete sadece bir kez oy verebilir ve sonuçları anında görebilir.</p>
-    </div>
-  </div>
-</div>
+---
 
-<div style="margin-bottom: 20px;">
-  <h3>İstatistikler Sayfası</h3>
-  <div style="display: flex; align-items: center;">
-    <img src="images/statistics.png" alt="İstatistikler Sayfası" width="300"/>
-    <div style="margin-left: 20px;">
-      <p>İstatistikler sayfasında:</p>
-      <ul>
-        <li>Anketlerin toplam oy sayıları</li>
-        <li>Her seçeneğin aldığı oy ve yüzdesi</li>
-        <li>Görsel ilerleme çubukları</li>
-        <li>Renk kodlamasıyla anket kategorileri</li>
-      </ul>
-      <p>İstatistik sayfası, oy dağılımını ve anketin popülaritesini görsel olarak sunar.</p>
-    </div>
-  </div>
-</div>
+### 2. Ana Sayfa
+![Ana Sayfa](images/Home.png)
+
+**Ana sayfada kullanıcılar:**
+- Karşılama mesajı ve kısmi gizlenmiş TC numarası
+- Anketler ve İstatistikler sayfalarına erişim butonları
+- Sayfa üst kısmında menü erişimi
+
+Hızlı erişim butonları ve kullanıcı bilgileri ile ana ekrandan kolay navigasyon.
+
+---
+
+### 3. Drawer Menü
+![Drawer Menü](images/Drawer.png)
+
+**Drawer menüde:**
+- Uygulama logosu ve ismi
+- Ana Sayfa menü öğesi
+- Anketler menü öğesi
+- İstatistikler menü öğesi
+- Çıkış butonuyla oturum kapatma
+
+Yan menü sayesinde uygulama içinde kolay gezinme sağlanır.
+
+---
+
+### 4. Anketler Sayfası
+![Anketler Sayfası](images/surveys.png)
+
+**Anketler sayfasında:**
+- Mevcut anketlerin liste halinde gösterimi
+- Her anket için farklı seçenekler
+- Kullanıcının daha önce oy verip vermediği bilgisi
+- Oy verdikten sonra sonuçların görüntülenmesi
+
+Kullanıcılar her ankete sadece bir kez oy verebilir ve sonuçları anında görebilir.
+
+---
+
+### 5. İstatistikler Sayfası
+![İstatistikler Sayfası](images/statistics.png)
+
+**İstatistikler sayfasında:**
+- Anketlerin toplam oy sayıları
+- Her seçeneğin aldığı oy ve yüzdesi
+- Görsel ilerleme çubukları
+- Renk kodlamasıyla anket kategorileri
+
+İstatistik sayfası, oy dağılımını ve anketin popülaritesini görsel olarak sunar.
 
 ## Sayfaların Görevleri ve İçerikleri
 
