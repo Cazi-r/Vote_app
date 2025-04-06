@@ -3,24 +3,20 @@ import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SurveyPage extends StatefulWidget {
-  // Anketleri sifirlama metodu
-  static Future<void> resetSurveys() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('selectedOption_0');
-    prefs.remove('selectedOption_1');
-    prefs.remove('selectedOption_2');
-  }
-
   @override
   State<SurveyPage> createState() => SurveyPageState();
 }
 
 class SurveyPageState extends State<SurveyPage> {
-  // Anket verileri
-  List<Map<String, dynamic>> anketler = [
+  // Giriş yapan kullanıcının ID'si
+  String? userId;
+
+  // Anket verileri listesi - Her anket bir Map olarak tanımlanmıştır
+  // Her Map içerisinde soru metni, seçenekler, oy sayıları, kullanıcı tercihi, görsel öğeler bulunur
+  List<Map<String, dynamic>> surveys = [
     {
-      'soru': 'Asagidaki meyvelerden hangisini daha cok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Cilek'],
+      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
+      'secenekler': ['Elma', 'Muz', 'Çilek'],
       'oylar': [0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
@@ -28,8 +24,8 @@ class SurveyPageState extends State<SurveyPage> {
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiginiz mevsim hangisidir?',
-      'secenekler': ['Ilkbahar', 'Yaz', 'Sonbahar', 'Kis'],
+      'soru': 'En sevdiğiniz mevsim hangisidir?',
+      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
       'oylar': [0, 0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
@@ -37,7 +33,7 @@ class SurveyPageState extends State<SurveyPage> {
       'renk': Colors.orange,
     },
     {
-      'soru': 'Asagidaki sporlardan hangisini daha cok seversiniz?',
+      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
       'secenekler': ['Futbol', 'Basketbol'],
       'oylar': [0, 0],
       'oyVerildi': false,
@@ -50,116 +46,128 @@ class SurveyPageState extends State<SurveyPage> {
   @override
   void initState() {
     super.initState();
-    verileriYukle();
+    // Önce kullanıcı ID'sini al, sonra verileri yükle
+    _loadUserId().then((_) {
+      loadData();
+    });
   }
 
-  // Kayitli verileri yukle
-  void verileriYukle() async {
+  // Giriş yapan kullanıcının ID'sini SharedPreferences'dan yükler
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('user_id');
+    });
+  }
+
+  // SharedPreferences'dan kayıtlı anket verilerini (oylar ve kullanıcı tercihleri) yükler
+  // İlk çalıştırmada veya veri yoksa varsayılan değerler kullanılır
+  void loadData() async {
+    if (userId == null) return; // Kullanıcı ID'si yoksa yükleme yapma
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      for (int i = 0; i < anketler.length; i++) {
-        // Oy verilerini yukle
+      for (int i = 0; i < surveys.length; i++) {
+        // Önceden kaydedilmiş oy sayılarını yükle
+        // 'votes_0', 'votes_1', 'votes_2' şeklinde saklanan string listelerini alır
         final oyListesi = prefs.getStringList('votes_$i');
         if (oyListesi != null) {
           List<int> oylar = [];
           for (String oy in oyListesi) {
             oylar.add(int.parse(oy));
           }
-          anketler[i]['oylar'] = oylar;
+          surveys[i]['oylar'] = oylar;
         }
 
-        // Secili secenek bilgisini yukle
-        final secilenIndex = prefs.getInt('selectedOption_$i');
+        // Kullanıcının daha önce seçtiği seçeneği yükle
+        // 'selectedOption_USER-ID_0', 'selectedOption_USER-ID_1', 'selectedOption_USER-ID_2' şeklinde saklanır
+        final secilenIndex = prefs.getInt('selectedOption_${userId}_$i');
         if (secilenIndex != null) {
-          anketler[i]['secilenSecenek'] = secilenIndex;
-          anketler[i]['oyVerildi'] = true;
+          surveys[i]['secilenSecenek'] = secilenIndex;
+          surveys[i]['oyVerildi'] = true;
         }
       }
     });
   }
 
-  // Oy verme islemi
-  void oyVer(int anketIndex, int secenekIndex) async {
+  // Kullanıcı bir seçeneği seçtiğinde çağrılan metot
+  // Seçilen seçeneğin oy sayısını artırır ve kullanıcı tercihini kaydeder
+  void vote(int surveyIndex, int optionIndex) async {
+    if (userId == null) return; // Kullanıcı giriş yapmamışsa işlem yapma
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Kullanıcının bu ankete daha önce oy verip vermediğini kontrol et
+    final mevcutSecim = prefs.getInt('selectedOption_${userId}_$surveyIndex');
+    
+    // Eğer kullanıcı daha önce oy vermişse, oyunu değiştirmesine izin verme
+    if (mevcutSecim != null) {
+      // Kullanıcı zaten oy vermiş, sessizce işlemi durdur
+      return;
+    }
+
     setState(() {
-      // Oyu bir arttir
-      anketler[anketIndex]['oylar'][secenekIndex]++;
-      // Secildi olarak isaretle
-      anketler[anketIndex]['oyVerildi'] = true;
-      anketler[anketIndex]['secilenSecenek'] = secenekIndex;
+      // Seçilen seçeneğin oy sayısını bir artır
+      surveys[surveyIndex]['oylar'][optionIndex]++;
+      // Bu anket için kullanıcının oy verdiğini işaretle ve seçimini kaydet
+      surveys[surveyIndex]['oyVerildi'] = true;
+      surveys[surveyIndex]['secilenSecenek'] = optionIndex;
     });
 
-    // Veriyi kaydet
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Oy listesini kaydet
+    // Güncellenmiş oy sayılarını SharedPreferences'a kaydet
+    // Int listesi direkt kaydedilemediği için string listesine dönüştürülür
     List<String> oyListesi = [];
-    for (int oy in anketler[anketIndex]['oylar']) {
+    for (int oy in surveys[surveyIndex]['oylar']) {
       oyListesi.add(oy.toString());
     }
-    prefs.setStringList('votes_$anketIndex', oyListesi);
+    prefs.setStringList('votes_$surveyIndex', oyListesi);
 
-    // Secilen secenegi kaydet
-    prefs.setInt('selectedOption_$anketIndex', secenekIndex);
-  }
-
-  // Anketleri sifirla
-  void anketleriSifirla() async {
-    setState(() {
-      for (var anket in anketler) {
-        anket['oyVerildi'] = false;
-        anket['secilenSecenek'] = null;
-      }
-    });
-
-    // Veriyi temizle
-    await SurveyPage.resetSurveys();
+    // Kullanıcının seçtiği seçeneği kullanıcı ID'sine göre kaydet
+    // Bu, her kullanıcının sadece bir kez oy vermesini sağlar
+    prefs.setInt('selectedOption_${userId}_$surveyIndex', optionIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF5181BE),
         title: Text('Anketler'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: anketleriSifirla,
-          ),
-        ],
       ),
       drawer: CustomDrawer(),
       body: ListView.builder(
         padding: EdgeInsets.all(16),
-        itemCount: anketler.length,
+        itemCount: surveys.length,
         itemBuilder: (context, index) {
-          return anketKartiOlustur(index);
+          return createSurveyCard(index);
         },
       ),
     );
   }
 
-  // Anket karti olusturma
-  Widget anketKartiOlustur(int anketIndex) {
-    Map<String, dynamic> anket = anketler[anketIndex];
-    bool oyVerildi = anket['oyVerildi'] == true;
+  // Anket kartını oluşturan widget metodu
+  // Her anket için başlık, simge ve seçenekleri içeren kart oluşturur
+  Widget createSurveyCard(int surveyIndex) {
+    Map<String, dynamic> survey = surveys[surveyIndex];
+    bool hasVoted = survey['oyVerildi'] == true;
 
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Soru basligi
+          // Soru başlığı ve anket ikonu
+          // Başlık üst kısmında anketin konusuyla ilgili bir ikon ve soru metni bulunur
           Padding(
             padding: EdgeInsets.all(16),
             child: Row(
               children: [
-                Icon(anket['ikon'], size: 28, color: anket['renk']),
+                Icon(survey['ikon'], size: 28, color: survey['renk']),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    anket['soru'],
+                    survey['soru'],
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -169,12 +177,13 @@ class SurveyPageState extends State<SurveyPage> {
 
           Divider(height: 1),
 
-          // Secenekler listesi
+          // Anket seçenekleri listesi
+          // Anketin tüm seçeneklerini ayrı satırlar halinde alt alta listeler
           Column(
             children: List.generate(
-              anket['secenekler'].length,
-              (secenekIndex) =>
-                  secenekSatiriOlustur(anketIndex, secenekIndex, oyVerildi),
+              survey['secenekler'].length,
+              (optionIndex) =>
+                  createOptionRow(surveyIndex, optionIndex, hasVoted),
             ),
           ),
 
@@ -184,49 +193,37 @@ class SurveyPageState extends State<SurveyPage> {
     );
   }
 
-  // Secenek satiri olusturma
-  Widget secenekSatiriOlustur(
-      int anketIndex, int secenekIndex, bool oyVerildi) {
-    Map<String, dynamic> anket = anketler[anketIndex];
-    String secenek = anket['secenekler'][secenekIndex];
-    bool secili = anket['secilenSecenek'] == secenekIndex;
+  // Her seçenek için ayrı bir satır oluşturan widget metodu
+  // Seçenek adını, seçim durumunu ve oy verilmiş ise oy sayısını gösterir
+  Widget createOptionRow(
+      int surveyIndex, int optionIndex, bool hasVoted) {
+    Map<String, dynamic> survey = surveys[surveyIndex];
+    String option = survey['secenekler'][optionIndex];
+    bool isSelected = survey['secilenSecenek'] == optionIndex;
 
-    return InkWell(
-      onTap: oyVerildi
+    return ListTile(
+      // Kullanıcı daha önce oy verdiyse tıklama devre dışı bırakılır
+      onTap: hasVoted
           ? null
           : () {
-              oyVer(anketIndex, secenekIndex);
+              vote(surveyIndex, optionIndex);
             },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Row(
-          children: [
-            // Secenek ikonu
-            Icon(
-              oyVerildi
-                  ? (secili ? Icons.check_circle : Icons.circle_outlined)
-                  : Icons.radio_button_unchecked,
-              color: oyVerildi && secili ? anket['renk'] : Colors.grey,
-            ),
-
-            SizedBox(width: 16),
-
-            // Secenek metni
-            Text(
-              secenek,
-              style: TextStyle(
-                color: oyVerildi && !secili ? Colors.grey : Colors.black,
-              ),
-            ),
-
-            // Oy sayisi
-            if (oyVerildi) ...[
-              Spacer(),
-              Text('${anket['oylar'][secenekIndex]} oy'),
-            ],
-          ],
+      leading: Icon(
+        hasVoted
+            ? (isSelected ? Icons.check_circle : Icons.circle_outlined)
+            : Icons.radio_button_unchecked,
+        color: hasVoted && isSelected ? survey['renk'] : Colors.grey,
+      ),
+      title: Text(
+        option,
+        style: TextStyle(
+          color: hasVoted && !isSelected ? Colors.grey : Colors.black,
         ),
       ),
+      trailing: hasVoted
+          ? Text('${survey['oylar'][optionIndex]} oy')
+          : null,
+      contentPadding: EdgeInsets.symmetric(horizontal: 20),
     );
   }
 }

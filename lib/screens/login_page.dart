@@ -8,20 +8,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Controller'lar
+  // TC kimlik numarası ve şifre bilgilerini saklar ve değişikliklerini takip eder
   final tcController = TextEditingController();
   final sifreController = TextEditingController();
-  // Durum degiskenleri
-  bool yukleniyor = false;
-  // Logo URL
+  
+  // Uygulama logosu için API'den alınan URL
   final logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Giris Sayfasi"),
+        backgroundColor: Color(0xFF5181BE),
+        title: Text("Giriş Sayfası"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,23 +28,28 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
+              // Login ekranında görünen uygulama logosu
               Image.network(
                 logoUrl,
-                height: 70,
-                width: 70,
+                height: 140,
+                width: 140,
               ),
               SizedBox(height: 16),
-              // Baslik
+              
+              // Uygulama başlığı
+              // Ana uygulama ismini gösterir
               Text(
-                'Anket Uygulamasi',
+                'Anket Uygulaması',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 24),
-              // TC Kimlik No alani
+              
+              // TC Kimlik No giriş alanı
+              // Kullanıcı tanımlaması için TC kimlik numarası istenir
+              // 11 karakter sınırlaması ve sadece sayı girişi sağlanır
               TextField(
                 controller: tcController,
                 decoration: InputDecoration(
@@ -57,26 +61,31 @@ class _LoginPageState extends State<LoginPage> {
                 maxLength: 11,
               ),
               SizedBox(height: 12),
-              // Sifre alani
+              
+              // Şifre giriş alanı
+              // Kullanıcının şifresini gizli şekilde girmesini sağlar
+              // Güvenlik için metin gizlenir (obscureText: true)
               TextField(
                 controller: sifreController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: "Sifre",
+                  labelText: "Şifre",
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
               ),
               SizedBox(height: 24),
-              // Giris butonu
+              
+              // Giriş butonu
+              // Kullanıcı bilgilerini kontrol eder ve giriş işlemini başlatır
               ElevatedButton(
-                onPressed: yukleniyor ? null : girisYap,
+                onPressed: login,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF5181BE),
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     minimumSize: Size(double.infinity, 50)),
-                child: Text('Giris Yap', style: TextStyle(fontSize: 18)),
+                child: Text('Giriş Yap', style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           ),
@@ -85,59 +94,55 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // TC kimlik kontrolu
-  bool tcKimlikGecerliMi(String? tc) {
-    if (tc == null || tc.isEmpty) return false;
-    if (tc.length != 11) return false;
-    if (tc[0] == '0') return false;
+  // TC kimlik numarası geçerlilik kontrolü
+  // TC numarası 11 haneli olmalı ve ilk rakamı 0 olmamalıdır
+  bool isIdValid(String? tc) {
+    if (tc == null || tc.isEmpty) return false;  // Boş değer kontrolü
+    if (tc.length != 11) return false;           // 11 hane kontrolü
+    if (tc[0] == '0') return false;              // İlk rakam 0 olmamalı
     return true;
   }
 
-  // Giris islemi
-  void girisYap() async {
-    // TC kimlik kontrolu
-    if (!tcKimlikGecerliMi(tcController.text)) {
-      mesajGoster("Hata", "Gecerli bir TC kimlik numarasi giriniz.");
+  // Kullanıcı giriş işlemini gerçekleştiren metot
+  // TC kimlik ve şifre kontrolü yaparak giriş işlemini yönetir
+  void login() async {
+    // TC kimlik numarası geçerlilik kontrolü
+    // Geçersiz ise hata mesajı gösterilir
+    if (!isIdValid(tcController.text)) {
+      showMessage("Hata", "Geçerli bir TC kimlik numarası giriniz.");
       return;
     }
-    // Sifre kontrolu
+    
+    // Şifre boş olmamalı kontrolü
+    // Boş ise hata mesajı gösterilir
     if (sifreController.text.isEmpty) {
-      mesajGoster("Hata", "Sifre alani bos birakilamaz.");
+      showMessage("Hata", "Şifre alanı boş bırakılamaz.");
       return;
     }
-    // Yukleniyor durumunu guncelle
-    setState(() {
-      yukleniyor = true;
-    });
 
     try {
-      // Kullanici ID'sini kaydet
+      // Kullanıcı TC'sini cihaz hafızasına kaydet
+      // SharedPreferences kullanarak oturum bilgisini saklar
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('user_id', tcController.text);
 
-      // Anketleri sifirla
-      await SurveyPage.resetSurveys();
-
-      // Ana sayfaya git
+      // Ana sayfaya yönlendir - giriş başarılı
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      mesajGoster("Hata", "Giris sirasinda bir hata olustu: $e");
-    } finally {
-      // Yukleniyor durumunu guncelle
-      setState(() {
-        yukleniyor = false;
-      });
+      // Hata durumunda kullanıcıya bilgi ver
+      showMessage("Hata", "Giriş sırasında bir hata oluştu: $e");
     }
   }
 
-  // Hata mesaji goster
-  void mesajGoster(String baslik, String mesaj) {
+  // Hata ve bilgi mesajlarını gösteren yardımcı metot
+  // AlertDialog kullanarak kullanıcıya bildirim gösterir
+  void showMessage(String title, String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(baslik),
-          content: Text(mesaj),
+          title: Text(title),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
