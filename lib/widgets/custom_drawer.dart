@@ -17,7 +17,7 @@ class CustomDrawer extends StatelessWidget {
           // Uygulama logosu ve adını içeren üst kısım
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color(0xFF5181BE),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +47,7 @@ class CustomDrawer extends StatelessWidget {
           // Ana Sayfa menü öğesi
           // Kullanıcıyı ana sayfaya yönlendirir
           ListTile(
-            leading: Icon(Icons.home, color: Colors.blue),
+            leading: Icon(Icons.home, color: Color(0xFF5181BE)),
             title: Text('Ana Sayfa'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/home');
@@ -57,7 +57,7 @@ class CustomDrawer extends StatelessWidget {
           // Anketler menü öğesi
           // Kullanıcıyı anket sayfasına yönlendirir, oy kullanmayı sağlar
           ListTile(
-            leading: Icon(Icons.poll, color: Colors.blue),
+            leading: Icon(Icons.poll, color: Color(0xFF5181BE)),
             title: Text('Anketler'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/survey');
@@ -67,7 +67,7 @@ class CustomDrawer extends StatelessWidget {
           // İstatistikler menü öğesi
           // Kullanıcıyı anket sonuçları ve istatistikleri sayfasına yönlendirir
           ListTile(
-            leading: Icon(Icons.bar_chart, color: Colors.blue),
+            leading: Icon(Icons.bar_chart, color: Color(0xFF5181BE)),
             title: Text('İstatistikler'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/statistics');

@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF5181BE),
         title: Text("Giriş Sayfası"),
       ),
       body: Padding(
@@ -31,8 +31,8 @@ class _LoginPageState extends State<LoginPage> {
               // Login ekranında görünen uygulama logosu
               Image.network(
                 logoUrl,
-                height: 70,
-                width: 70,
+                height: 140,
+                width: 140,
               ),
               SizedBox(height: 16),
               
@@ -80,12 +80,12 @@ class _LoginPageState extends State<LoginPage> {
               // Giriş butonu
               // Kullanıcı bilgilerini kontrol eder ve giriş işlemini başlatır
               ElevatedButton(
-                onPressed: girisYap,
+                onPressed: login,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF5181BE),
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     minimumSize: Size(double.infinity, 50)),
-                child: Text('Giriş Yap', style: TextStyle(fontSize: 18)),
+                child: Text('Giriş Yap', style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           ),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // TC kimlik numarası geçerlilik kontrolü
   // TC numarası 11 haneli olmalı ve ilk rakamı 0 olmamalıdır
-  bool tcKimlikGecerliMi(String? tc) {
+  bool isIdValid(String? tc) {
     if (tc == null || tc.isEmpty) return false;  // Boş değer kontrolü
     if (tc.length != 11) return false;           // 11 hane kontrolü
     if (tc[0] == '0') return false;              // İlk rakam 0 olmamalı
@@ -105,18 +105,18 @@ class _LoginPageState extends State<LoginPage> {
 
   // Kullanıcı giriş işlemini gerçekleştiren metot
   // TC kimlik ve şifre kontrolü yaparak giriş işlemini yönetir
-  void girisYap() async {
+  void login() async {
     // TC kimlik numarası geçerlilik kontrolü
     // Geçersiz ise hata mesajı gösterilir
-    if (!tcKimlikGecerliMi(tcController.text)) {
-      mesajGoster("Hata", "Geçerli bir TC kimlik numarası giriniz.");
+    if (!isIdValid(tcController.text)) {
+      showMessage("Hata", "Geçerli bir TC kimlik numarası giriniz.");
       return;
     }
     
     // Şifre boş olmamalı kontrolü
     // Boş ise hata mesajı gösterilir
     if (sifreController.text.isEmpty) {
-      mesajGoster("Hata", "Şifre alanı boş bırakılamaz.");
+      showMessage("Hata", "Şifre alanı boş bırakılamaz.");
       return;
     }
 
@@ -126,26 +126,23 @@ class _LoginPageState extends State<LoginPage> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('user_id', tcController.text);
 
-      // Anket verilerini sıfırla - yeni giriş için temiz başlangıç
-      await SurveyPage.resetSurveys();
-
       // Ana sayfaya yönlendir - giriş başarılı
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       // Hata durumunda kullanıcıya bilgi ver
-      mesajGoster("Hata", "Giriş sırasında bir hata oluştu: $e");
+      showMessage("Hata", "Giriş sırasında bir hata oluştu: $e");
     }
   }
 
   // Hata ve bilgi mesajlarını gösteren yardımcı metot
   // AlertDialog kullanarak kullanıcıya bildirim gösterir
-  void mesajGoster(String baslik, String mesaj) {
+  void showMessage(String title, String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(baslik),
-          content: Text(mesaj),
+          title: Text(title),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
