@@ -103,5 +103,3 @@ Kullanıcı giriş bilgileri şu şekilde saklanır ve yönetilir:
 - **lib/screens/**: Uygulama sayfaları (login_page.dart, home_page.dart, survey_page.dart, statistics_page.dart)
 - **lib/widgets/**: Tekrar kullanılabilir widget'lar (custom_drawer.dart)
 - **lib/main.dart**: Uygulama başlangıç noktası ve rota tanımları
-
---
