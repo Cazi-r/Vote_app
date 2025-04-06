@@ -13,7 +13,7 @@ Bu proje, kullanıcıların TC kimlik numaralarıyla giriş yapıp çeşitli ank
 ## Ekran Görüntüleri
 
 ### 1. Giriş Sayfası
-![Giriş Sayfası](images/Login.png)
+![Giriş Sayfası](images/login.png)
 
 **Giriş sayfasında kullanıcılar:**
 - TC kimlik numarası giriş alanı
@@ -26,7 +26,7 @@ TC kimlik numarası 11 haneli olmalı ve ilk rakamı 0 olmamalıdır.
 ---
 
 ### 2. Ana Sayfa
-![Ana Sayfa](images/Home.png)
+![Ana Sayfa](images/home.png)
 
 **Ana sayfada kullanıcılar:**
 - Karşılama mesajı ve kısmi gizlenmiş TC numarası
@@ -38,7 +38,7 @@ Hızlı erişim butonları ve kullanıcı bilgileri ile ana ekrandan kolay navig
 ---
 
 ### 3. Drawer Menü
-![Drawer Menü](images/Drawer.png)
+![Drawer Menü](images/drawer.png)
 
 **Drawer menüde:**
 - Uygulama logosu ve ismi
