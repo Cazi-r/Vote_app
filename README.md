@@ -8,7 +8,6 @@ Bu proje, kullanıcıların TC kimlik numaralarıyla giriş yapıp çeşitli ank
 - Farklı kategorilerde anketler
 - Her kullanıcının her ankete sadece bir kez oy verebilmesi
 - Anket sonuçlarının gerçek zamanlı görüntülenmesi
-- Kullanıcı oturum bilgilerinin güvenli şekilde saklanması
 
 ## Ekran Görüntüleri
 
@@ -96,8 +95,6 @@ Kullanıcı giriş bilgileri şu şekilde saklanır ve yönetilir:
 | Metehan Beyaz   | 030122029 | Anasayfa, Drawer ve görsel bileşenler        |
 
 ---
-
-## Diğer Özellikler
 
 ### Kod Organizasyonu
 - **lib/screens/**: Uygulama sayfaları (login_page.dart, home_page.dart, survey_page.dart, statistics_page.dart)
