@@ -8,17 +8,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Kullanıcı girişi için gereken metin kontrolleri
   // TC kimlik numarası ve şifre bilgilerini saklar ve değişikliklerini takip eder
   final tcController = TextEditingController();
   final sifreController = TextEditingController();
   
-  // Giriş işlemi yüklenme durumu - buton durumunu ve görünümünü değiştirmek için kullanılır
-  // true olduğunda buton devre dışı kalır ve yükleniyor göstergesi görünür
-  bool yukleniyor = false;
-  
-  // Uygulama logosu için URL
-  // Giriş sayfasının üst kısmında gösterilen logo
+  // Uygulama logosu için API'den alınan URL
   final logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png';
 
   @override
@@ -34,8 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Uygulama logosu
-              // Kullanıcıya görsel bir tanımlama sağlar
+              // Login ekranında görünen uygulama logosu
               Image.network(
                 logoUrl,
                 height: 70,
@@ -86,9 +79,8 @@ class _LoginPageState extends State<LoginPage> {
               
               // Giriş butonu
               // Kullanıcı bilgilerini kontrol eder ve giriş işlemini başlatır
-              // Yükleniyor durumunda buton devre dışı kalır
               ElevatedButton(
-                onPressed: yukleniyor ? null : girisYap,
+                onPressed: girisYap,
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
@@ -127,11 +119,6 @@ class _LoginPageState extends State<LoginPage> {
       mesajGoster("Hata", "Şifre alanı boş bırakılamaz.");
       return;
     }
-    
-    // Yükleniyor durumunu aktifleştir - butonun görünümünü değiştirir
-    setState(() {
-      yukleniyor = true;
-    });
 
     try {
       // Kullanıcı TC'sini cihaz hafızasına kaydet
@@ -147,11 +134,6 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       // Hata durumunda kullanıcıya bilgi ver
       mesajGoster("Hata", "Giriş sırasında bir hata oluştu: $e");
-    } finally {
-      // İşlem bittiğinde yükleniyor durumunu kapat
-      setState(() {
-        yukleniyor = false;
-      });
     }
   }
 
