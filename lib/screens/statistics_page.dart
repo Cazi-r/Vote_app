@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
+ * İstatistikler Sayfası Widget
+ 
+ - Kullanıcıların anket sonuçlarını görebileceği, grafiksel olarak sonuçların görselleştirildiği sayfayı oluşturur.
+ - StatefulWidget olarak tasarlanmıştır çünkü anket verileri dinamik olarak yüklenir.
+*/
+
 class StatisticsPage extends StatefulWidget {
   @override
   State<StatisticsPage> createState() => StatisticsPageState();
 }
 
 class StatisticsPageState extends State<StatisticsPage> {
-  // Anket verileri listesi - Survey sayfasındaki anketlerle aynı format ve içeriğe sahip
-  // Ancak burada sadece gösterim amaçlı olduğu için 'oyVerildi' ve 'secilenSecenek' alanları yok
-  List<Map<String, dynamic>> surveys = [
+  
+  List<Map<String, dynamic>> surveys = [ // Anket verileri listesi. Survey sayfasındaki anketlerle 'oyVerildi' ve 'secilenSecenek' alanları hariç aynı format ve içeriğe sahip.
     {
       'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
       'secenekler': ['Elma', 'Muz', 'Çilek'],
@@ -39,27 +45,20 @@ class StatisticsPageState extends State<StatisticsPage> {
     super.initState();
     loadData();
   }
-
-  // SharedPreferences'dan kaydedilmiş oy verilerini yükler
-  // Bu metot sayfa açıldığında çağrılır ve tüm anketlerin güncel oy durumlarını gösterir
-  void loadData() async {
+  
+  void loadData() async { // SharedPreferences'dan kaydedilmiş oy verilerini yükler. Sayfa açıldığında çağrılır ve anketlerin güncel oy durumlarını gösterir.
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     for (int i = 0; i < surveys.length; i++) {
-      // Oy verilerini içeren string listesini ('votes_0', 'votes_1', 'votes_2' anahtarlarıyla) yükle
-      List<String>? oyListesi = prefs.getStringList('votes_$i');
-
-      // Veri varsa ve boş değilse işleme devam et
-      if (oyListesi != null && oyListesi.isNotEmpty) {
+      List<String>? oyListesi = prefs.getStringList('votes_$i'); // Oy verilerini içeren string listesini yükler.
+      
+      if (oyListesi != null && oyListesi.isNotEmpty) { // Veri varsa ve boş değilse işleme devam et.
         try {
-          // String listesini int listesine dönüştür (SharedPreferences int listesi saklamadığı için)
-          List<int> oylar = [];
+          List<int> oylar = []; // String listesini int listesine dönüştür. (SharedPreferences int listesi saklamadığı için)
           for (String oy in oyListesi) {
             oylar.add(int.parse(oy));
           }
-
-          // Anket verisini güncel oy sayılarıyla güncelle
-          setState(() {
+          setState(() { // Anket verisini güncel oy sayılarıyla günceller.
             surveys[i]['oylar'] = oylar;
           });
         } catch (e) {
@@ -87,17 +86,19 @@ class StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // İstatistik kartını oluşturan widget metodu
-  // Her anket için soru, toplam oy sayısı ve seçeneklerin durumunu gösteren kart oluşturur
+  /*
+   - İstatistik Kartı Oluşturucu: Her anket için soru, toplam oy sayısı ve seçeneklerin durumunu gösteren kart oluşturur.
+   
+   - surveyIndex Hangi anketin kartını oluşturacağımızı tutar.
+   - return Anket istatistik kartı widget'ı tutar.
+  */
   Widget createStatisticsCard(int surveyIndex) {
     Map<String, dynamic> survey = surveys[surveyIndex];
 
-    // Tüm seçeneklerin aldığı toplam oy sayısını hesapla
-    // Bu değer hem gösterim için kullanılır hem de yüzde hesaplarında payda olarak kullanılır
     int totalVotes = 0;
     List<int> votes = survey['oylar'];
     for (int vote in votes) {
-      totalVotes += vote;
+      totalVotes += vote; // Tüm seçeneklerin aldığı toplam oy sayısını hesaplar. Bu değer hem gösterim için hem de yüzde hesaplarında kullanılır.
     }
 
     return Card(
@@ -107,8 +108,6 @@ class StatisticsPageState extends State<StatisticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Anket sorusu ve ikonu - kart başlığı
-            // Anketin içeriğini temsil eden ikon ve soru metni
             Row(
               children: [
                 Icon(survey['ikon'], size: 28, color: survey['renk']),
@@ -121,24 +120,16 @@ class StatisticsPageState extends State<StatisticsPage> {
                 ),
               ],
             ),
-
             SizedBox(height: 12),
-
-            // Ankete verilen toplam oy sayısı bilgisi
-            // Hiç oy verilmediyse 0 gösterilir
-            Text(
+            Text( // Ankete verilen toplam oy sayısı bilgisi. Hiç oy verilmediyse 0 gösterilir.
               'Toplam: $totalVotes oy',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             SizedBox(height: 16),
-
-            // Tüm seçeneklerin sonuçlarını içeren widget listesi
-            // Her seçenek için oy sayısı, yüzdesi ve ilerlemesi gösterilir
             Column(
-              children: createOptionResults(survey, totalVotes),
+              children: createOptionResults(survey, totalVotes), // Seçeneklerin sonuçlarını içeren widget listesi.
             ),
           ],
         ),
@@ -146,8 +137,13 @@ class StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  // Her seçenek için ayrı sonuç satırı widget'ları oluşturan metot
-  // Seçenek adı, oy sayısı, yüzdesi ve grafiksel gösterimini içerir
+  /*
+   - Seçenek Sonuçlarını Oluşturucu: Seçenek adı, oy sayısı, yüzdesi ve grafiksel gösterimini içerir
+   
+   - survey Anket verisini tutar.
+   - totalVotes Anketin toplam oy sayısını tutar.
+   - return Seçenek sonuç widget'larının listesini tutar.
+  */
   List<Widget> createOptionResults(
       Map<String, dynamic> survey, int totalVotes) {
     List<Widget> results = [];
@@ -155,22 +151,17 @@ class StatisticsPageState extends State<StatisticsPage> {
     for (int i = 0; i < survey['secenekler'].length; i++) {
       String option = survey['secenekler'][i];
       int voteCount = survey['oylar'][i];
-
-      // Seçeneğin aldığı oyun toplam oylara oranını yüzde olarak hesapla
-      // Toplam oy yoksa yüzde sıfır olacaktır
       double percentage = 0;
+      
       if (totalVotes > 0) {
-        percentage = (voteCount / totalVotes) * 100;
+        percentage = (voteCount / totalVotes) * 100; // Seçeneğin aldığı oyun toplam oylara oranını yüzde olarak hesapla. Toplam oy yoksa yüzde sıfır olacaktır.
       }
-
-      // Her seçenek için oy bilgisi ve ilerleme çubuğu içeren widget
-      Widget resultWidget = Padding(
+      
+      Widget resultWidget = Padding( // Her seçenek için oy bilgisi ve ilerleme çubuğu içeren widget.
         padding: EdgeInsets.only(bottom: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Seçenek adı, oy sayısı ve yüzde bilgisi
-            // Örnek: "Elma: 5 (50%)"
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,24 +169,18 @@ class StatisticsPageState extends State<StatisticsPage> {
                 Text('$voteCount (${percentage.toStringAsFixed(0)}%)'),
               ],
             ),
-
             SizedBox(height: 4),
-
-            // Oyun yüzdesini görsel olarak temsil eden ilerleme çubuğu
-            // Her seçenek için anketin renginde bir çubuk gösterilir
-            LinearProgressIndicator(
-              value: percentage / 100,
+            LinearProgressIndicator( // Oyun yüzdesini görsel olarak temsil eden ilerleme çubuğu. Her seçenek için anketin renginde bir çubuk gösterilir.
+              value: percentage / 100, // 0-1 arası değer.
               backgroundColor: Colors.grey[200],
-              valueColor: AlwaysStoppedAnimation<Color>(survey['renk']),
-              minHeight: 10,
+              valueColor: AlwaysStoppedAnimation<Color>(survey['renk']), // Doluluk rengi.
+              minHeight: 10, // Çubuk yüksekliği.
             ),
           ],
         ),
       );
-
       results.add(resultWidget);
     }
-
     return results;
   }
 }
