@@ -2,28 +2,31 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_drawer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
+ * Ana Sayfa Widget
+ 
+ - Uygulamanın merkezi sayfası olarak tasarlanmıştır.
+ - Kullanıcıya: Kişisel karşılama mesajı ve kısmi TC bilgisi ile uygulamanın ana fonksiyonlarına hızlı erişim butonları sunar.
+*/
+
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // Giriş yapan kullanıcının ID bilgisi (TC kimlik numarası)
-  // SharedPreferences'dan yüklenir ve kullanıcı bilgisi kartında kullanılır
-  String? userId;
-
+  String? userId; // Giriş yapan kullanıcının ID bilgisi. SharedPreferences'tan yüklenen ve LoginPage'de kaydedilen TC kimlik no.
+  
   @override
   void initState() {
     super.initState();
-    getUserId();
+    getUserId(); // Widget ilk oluşturulduğunda kullanıcı ID'sini yükler.
   }
 
-  // Kullanıcı kimlik bilgisini SharedPreferences'dan yükleyen metot
-  // Giriş yapıldığında LoginPage tarafından kaydedilen 'user_id' değerini alır
-  void getUserId() async {
+  void getUserId() async { // Kullanıcı kimlik bilgisini SharedPreferences'dan yükleyen metot.
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userId = prefs.getString('user_id');
+      userId = prefs.getString('user_id'); // Giriş yapıldığında LoginPage tarafından kaydedilen 'user_id' değerini alır.
     });
   }
 
@@ -34,54 +37,41 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFF5181BE),
         title: Text("Ana Sayfa"),
       ),
-      // Yan menü çekmecesi - uygulama içi navigasyonu sağlar
       drawer: CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kullanıcı bilgi kartı - sadece kullanıcı giriş yapmışsa gösterilir
-            // TC kimlik numarasının bir kısmını gizleyerek güvenli şekilde gösterir
-            if (userId != null) createUserCard(),
-
+            if (userId != null) createUserCard(),  // Kullanıcı bilgi kartı - sadece kullanıcı giriş yapmışsa gösterilir. TC kimlik numarasının bir kısmını gizleyerek gösterir.
             SizedBox(height: 20),
             Divider(),
             SizedBox(height: 20),
-
-            // Ana menü başlık bölümü - hızlı erişim seçeneklerini tanıtır
             createHeaderRow('Hızlı Erişim', Icons.dashboard),
-
-            // Anket sayfasına giden navigasyon butonu
-            // Kullanıcının mevcut anketlere erişmesini ve oy kullanmasını sağlar
-            createMenuButton(
+            createMenuButton( // Anket sayfasına giden navigasyon butonu. Kullanıcının mevcut anketlere erişmesini ve oy kullanmasını sağlar.
                 icon: Icons.poll,
                 title: 'Anketler',
                 description: 'Anketlere eriş ve oy kullan',
                 onTapFunction: () {
                   Navigator.pushNamed(context, '/survey');
-                }),
-
+                }
+            ),
             SizedBox(height: 10),
-
-            // İstatistik sayfasına giden navigasyon butonu
-            // Kullanıcının anket sonuçlarını ve istatistikleri görüntülemesini sağlar
-            createMenuButton(
+            createMenuButton( // İstatistik sayfasına giden navigasyon butonu. Kullanıcının anket sonuçlarını ve istatistikleri görüntülemesini sağlar.
                 icon: Icons.bar_chart,
                 title: 'İstatistikler',
                 description: 'Anket sonuçlarını incele',
                 onTapFunction: () {
                   Navigator.pushNamed(context, '/statistics');
-                }),
+                }
+            ),
           ],
         ),
       ),
     );
   }
 
-  // Kullanıcı bilgilerini gösteren kart widget'ı
-  // Giriş yapan kullanıcının karşılama mesajı ve kısmi gizlenmiş TC kimlik numarasını içerir
-  Widget createUserCard() {
+  Widget createUserCard() {  // Kullanıcı bilgilerini gösteren kart widget. Giriş yapan kullanıcının karşılama mesajı ve kısmi gizlenmiş TC kimlik numarasını içerir.
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -97,7 +87,6 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
-          // Kullanıcı avatarı - ikon olarak gösterilir
           CircleAvatar(
             backgroundColor: Color(0xFF5181BE),
             child: Icon(Icons.person, color: Colors.white),
@@ -106,7 +95,6 @@ class _HomePageState extends State<HomePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Kullanıcı karşılama mesajı
               Text(
                 'Hoşgeldiniz',
                 style: TextStyle(
@@ -114,10 +102,8 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 16,
                 ),
               ),
-              // Kısmi gizlenmiş TC kimlik numarası 
-              // Örnek: İlk 3 hane ve son 3 hane gösterilir, ortası yıldızlarla gizlenir
               Text(
-                'TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}',
+                'TC: ${userId!.substring(0, 3)}*****${userId!.substring(8, 11)}', // Kısmi gizlenmiş TC kimlik numarası. İlk 3 hane ve son 3 hane gösterilir, ortası yıldızlarla gizlenir.
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],
@@ -130,9 +116,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Başlık satırını oluşturan yardımcı metot
-  // Bölüm başlıklarını ikon ile birlikte gösterir
-  Widget createHeaderRow(String title, IconData icon) {
+  Widget createHeaderRow(String title, IconData icon) { // Başlık satırını oluşturan yardımcı metot. Bölüm başlıklarını ikon ile birlikte gösterir.
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
       child: Row(
@@ -150,10 +134,18 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  // Menü butonlarını oluşturan yardımcı metot
-  // Farklı bölümlere giden butonlar için tutarlı bir görünüm ve davranış sağlar
-  // Her buton bir ikon, başlık, açıklama içerir ve tıklandığında ilgili sayfaya yönlendirir
+  
+  /*
+   * Menü Butonu Oluşturucu: Farklı bölümlere giden butonlar için tutarlı bir görünüm ve davranış sağlar.
+   
+   - icon: Butonda gösterilecek ikonu tutar.
+   - title: Buton başlığını tutar.
+   - description: Buton açıklamasını tutar.
+   - onTapFunction: Butona tıklandığında çalışacak fonksiyonu tutar.
+   - return Özelleştirilmiş ElevatedButton widget'ı tutar.
+   
+   - Tüm menü butonları tutarlı bir görünüm için bu metotla oluşturulur.
+  */
   Widget createMenuButton(
       {required IconData icon,
       required String title,
@@ -171,14 +163,12 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         children: [
-          // Menü öğesi ikonu - her öğe için farklı ve anlamlı ikonlar kullanılır
           Icon(icon, color: Color(0xFF5181BE), size: 24),
           SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Menü başlığı
                 Text(
                   title,
                   style: TextStyle(
@@ -186,7 +176,6 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                // Menü açıklaması - kullanıcıya öğenin amacını açıklar
                 Text(
                   description,
                   style: TextStyle(
@@ -197,8 +186,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // İleri git ikonu - kullanıcıya butonun başka bir sayfaya yönlendireceğini gösterir
-          Icon(Icons.arrow_forward, color: Colors.grey, size: 16),
+          Icon(Icons.arrow_forward, color: Colors.grey, size: 16), // İleri git ikonu. Kullanıcıya butonun başka bir sayfaya yönlendireceğini gösterir.
         ],
       ),
     );
