@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Drawer (Yan Menü) Widget: Uygulamada kullanıcı gezinmesini sağlayan yan menüyü oluşturur.
+/*
+ * Drawer (Yan Menü) Widget
+ 
+ * Uygulamada kullanıcı gezinmesini sağlayan yan menüyü oluşturur.
+*/
 
 class CustomDrawer extends StatelessWidget {
   final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png'; // Uygulama logosu için URL tanımı.
