@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /*
  * Drawer (Yan Menü) Widget
  
- * Uygulamada kullanıcı gezinmesini sağlayan yan menüyü oluşturur.
+ - Uygulamada kullanıcı gezinmesini sağlayan yan menüyü oluşturur.
 */
 
 class CustomDrawer extends StatelessWidget {
