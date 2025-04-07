@@ -100,7 +100,6 @@ class StatisticsPageState extends State<StatisticsPage> {
     for (int vote in votes) {
       totalVotes += vote; // Tüm seçeneklerin aldığı toplam oy sayısını hesaplar. Bu değer hem gösterim için hem de yüzde hesaplarında kullanılır.
     }
-
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: Padding(
