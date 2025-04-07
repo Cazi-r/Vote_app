@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
   }
   
   /*
-   * Menü Butonu Oluşturucu: Farklı bölümlere giden butonlar için tutarlı bir görünüm ve davranış sağlar.
+   - Menü Butonu Oluşturucu: Farklı bölümlere giden butonlar için tutarlı bir görünüm ve davranış sağlar.
    
    - icon: Butonda gösterilecek ikonu tutar.
    - title: Buton başlığını tutar.
