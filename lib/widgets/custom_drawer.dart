@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+// Drawer (Yan Menü) Widget: Uygulamada kullanıcı gezinmesini sağlayan yan menüyü oluşturur.
+
 class CustomDrawer extends StatelessWidget {
-  final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png'; // uygulama logosu için URL tanımı
+  final String logoUrl = 'https://cdn-icons-png.flaticon.com/512/1902/1902201.png'; // Uygulama logosu için URL tanımı.
 
   @override
   Widget build(BuildContext context) {
@@ -10,14 +12,14 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader( // drawer başlık bölümü
+          DrawerHeader( // Drawer başlık bölümü.
             decoration: BoxDecoration(
               color: Color(0xFF5181BE),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network( // uygulama logosu
+                Image.network( // Uygulama logosu.
                   logoUrl,
                   height: 70,
                   width: 70,
@@ -35,7 +37,7 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           
-          ListTile( // ana sayfa menü öğesi: kullanıcıyı ana sayfaya yönlendirir
+          ListTile( // Ana Sayfa menü öğesi: Kullanıcıyı ana sayfaya yönlendirir.
             leading: Icon(Icons.home, color: Color(0xFF5181BE)),
             title: Text('Ana Sayfa'),
             onTap: () {
@@ -43,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           
-          ListTile( // anketler menü öğesi: kullanıcıyı anket sayfasına yönlendirir ve oy kullanmayı sağlar
+          ListTile( // Anketler menü öğesi: Kullanıcıyı anket sayfasına yönlendirir ve oy kullanmayı sağlar.
             leading: Icon(Icons.poll, color: Color(0xFF5181BE)),
             title: Text('Anketler'),
             onTap: () {
@@ -51,7 +53,7 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           
-          ListTile( // istatistikler menü öğesi: kullanıcıyı anket sonuçları ve istatistikleri sayfasına yönlendirir
+          ListTile( // İstatistikler menü öğesi: Kullanıcıyı anket sonuçları ve istatistikleri sayfasına yönlendirir.
             leading: Icon(Icons.bar_chart, color: Color(0xFF5181BE)),
             title: Text('İstatistikler'),
             onTap: () {
@@ -59,9 +61,9 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           
-          Divider(),  // ayırıcı çizgi - alt menü öğelerini ayırır
+          Divider(), // Ayırıcı çizgi - alt menü öğelerini ayırır.
           
-          ListTile( // çıkış menü öğesi: kullanıcıyı oturumdan çıkarır ve giriş sayfasına yönlendirir
+          ListTile( // Çıkış menü öğesi: Kullanıcıyı oturumdan çıkarır ve giriş sayfasına yönlendirir.
             leading: Icon(Icons.logout, color: Colors.red),
             title: Text('Çıkış'),
             onTap: () {
