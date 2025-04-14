@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
               // Uygulama başlığı
               // Ana uygulama ismini gösterir
               Text(
-                'Anket Uygulaması',
+                'VOXURE',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

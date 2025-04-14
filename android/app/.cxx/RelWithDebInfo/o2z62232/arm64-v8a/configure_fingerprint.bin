@@ -2,6 +2,7 @@ C/C++ Structured Log{
 y
 wC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\additional_project_files.txtC
 A
+<<<<<<< Updated upstream
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	® ¹±ß2 ¸›–ß2x
 v
 tC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\android_gradle_build.json	® ¹±ß2Ó ’¸›–ß2}
@@ -26,3 +27,29 @@ t
 rC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\symbol_folder_index.txt	¯ ¹±ß2i —¸›–ß2O
 M
 KC:\sdk\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	¯ ¹±ß2§ áÕøÂÞ2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	”È²ùâ2 ²•…çà2x
+v
+tC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\android_gradle_build.json	”È²ùâ2Ó µ•…çà2}
+{
+yC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\android_gradle_build_mini.json	”È²ùâ2® ¹•…çà2j
+h
+fC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\build.ninja	”È²ùâ2øÔ ì”…çà2n
+l
+jC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\build.ninja.txt	”È²ùâ2s
+q
+oC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\build_file_index.txt	”È²ùâ2K »•…çà2t
+r
+pC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\compile_commands.json	”È²ùâ2x
+v
+tC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\compile_commands.json.bin	”È²ùâ2	~
+|
+zC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\metadata_generation_command.txt	”È²ùâ2
+ü º•…çà2q
+o
+mC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\prefab_config.json	”È²ùâ2( º•…çà2v
+t
+rC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\arm64-v8a\symbol_folder_index.txt	”È²ùâ2i º•…çà2O
+M
+KC:\sdk\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	”È²ùâ2§ áÕøÂÞ2
+>>>>>>> Stashed changes

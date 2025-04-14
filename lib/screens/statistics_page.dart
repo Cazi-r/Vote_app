@@ -12,25 +12,25 @@ class StatisticsPageState extends State<StatisticsPage> {
   // Ancak burada sadece gösterim amaçlı olduğu için 'oyVerildi' ve 'secilenSecenek' alanları yok
   List<Map<String, dynamic>> surveys = [
     {
-      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Çilek'],
+      'soru': 'Cumhurbaşkanlığı seçiminde kimi destekliyorsunuz?',
+      'secenekler': ['A Kişisi', 'B Kişisi', 'C Kişisi'],
       'oylar': [0, 0, 0],
-      'ikon': Icons.food_bank,
+      'ikon': Icons.how_to_vote,
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiğiniz mevsim hangisidir?',
-      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
+      'soru': 'Hangi işletim sistemini tercih ediyorsunuz?',
+      'secenekler': ['Windows', 'Linux', 'MacOS', 'Pardus'],
       'oylar': [0, 0, 0, 0],
-      'ikon': Icons.wb_sunny,
+      'ikon': Icons.computer,
       'renk': Colors.orange,
     },
     {
-      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
-      'secenekler': ['Futbol', 'Basketbol'],
-      'oylar': [0, 0],
-      'ikon': Icons.sports_soccer,
-      'renk': Colors.blue,
+      'soru': 'Hangi sosyal medya platformunu daha sık kullanıyorsunuz?',
+      'secenekler': ['Instagram', 'Twitter (X)', 'TikTok', 'Facebook'],
+      'oylar': [0, 0, 0, 0],
+      'ikon': Icons.public,
+      'renk': Colors.purple,
     },
   ];
 
@@ -57,9 +57,24 @@ class StatisticsPageState extends State<StatisticsPage> {
           for (String oy in oyListesi) {
             oylar.add(int.parse(oy));
           }
+<<<<<<< Updated upstream
 
           // Anket verisini güncel oy sayılarıyla güncelle
           setState(() {
+=======
+          
+          // Yüklenen oy verilerinin, seçenek sayısıyla eşleşmesini sağla
+          if (oylar.length != surveys[i]['secenekler'].length) {
+            // Eksik oy verilerini tamamla
+            List<int> yeniOylar = List<int>.filled(surveys[i]['secenekler'].length, 0);
+            for (int j = 0; j < oylar.length && j < yeniOylar.length; j++) {
+              yeniOylar[j] = oylar[j];
+            }
+            oylar = yeniOylar;
+          }
+          
+          setState(() { // Anket verisini güncel oy sayılarıyla günceller.
+>>>>>>> Stashed changes
             surveys[i]['oylar'] = oylar;
           });
         } catch (e) {

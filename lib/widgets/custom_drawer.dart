@@ -33,7 +33,7 @@ class CustomDrawer extends StatelessWidget {
                 // Uygulama adı
                 // Beyaz renkte ve vurgulu şekilde gösterilir
                 Text(
-                  'Anket Uygulaması',
+                  'VOXURE',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,

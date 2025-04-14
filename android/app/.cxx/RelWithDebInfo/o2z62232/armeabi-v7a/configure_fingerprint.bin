@@ -2,6 +2,7 @@ C/C++ Structured Log}
 {
 yC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\additional_project_files.txtC
 A
+<<<<<<< Updated upstream
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	¿ ¹±ß2 ïÊ›–ß2z
 x
 vC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\android_gradle_build.json	¿ ¹±ß2× ðÊ›–ß2
@@ -26,3 +27,29 @@ v
 tC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\symbol_folder_index.txt	¿ ¹±ß2k ôÊ›–ß2O
 M
 KC:\sdk\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	¿ ¹±ß2§ áÕøÂÞ2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	£È²ùâ2 ƒ¨…çà2z
+x
+vC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\android_gradle_build.json	£È²ùâ2× „¨…çà2
+}
+{C:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\android_gradle_build_mini.json	£È²ùâ2² ‡¨…çà2l
+j
+hC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\build.ninja	£È²ùâ2‚Õ ·§…çà2p
+n
+lC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\build.ninja.txt	£È²ùâ2u
+s
+qC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\build_file_index.txt	£È²ùâ2K ‰¨…çà2v
+t
+rC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\compile_commands.json	£È²ùâ2z
+x
+vC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\compile_commands.json.bin	£È²ùâ2	€
+~
+|C:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\metadata_generation_command.txt	£È²ùâ2
+†	 ˆ¨…çà2s
+q
+oC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\prefab_config.json	£È²ùâ2( ˆ¨…çà2x
+v
+tC:\Users\panda\Desktop\Git-hub\Vote_app\android\app\.cxx\RelWithDebInfo\o2z62232\armeabi-v7a\symbol_folder_index.txt	£È²ùâ2k ‰¨…çà2O
+M
+KC:\sdk\flutter\packages\flutter_tools\gradle\src\main\groovy\CMakeLists.txt	£È²ùâ2§ áÕøÂÞ2
+>>>>>>> Stashed changes

@@ -15,31 +15,29 @@ class SurveyPageState extends State<SurveyPage> {
   // Her Map içerisinde soru metni, seçenekler, oy sayıları, kullanıcı tercihi, görsel öğeler bulunur
   List<Map<String, dynamic>> surveys = [
     {
-      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Çilek'],
+      'soru': 'Cumhurbaşkanlığı seçiminde kimi destekliyorsunuz?',
+      'secenekler': ['A Kişisi', 'B Kişisi', 'C Kişisi'],
       'oylar': [0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
-      'ikon': Icons.food_bank,
+      'ikon': Icons.how_to_vote,
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiğiniz mevsim hangisidir?',
-      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
+      'soru': 'Hangi işletim sistemini tercih ediyorsunuz?',
+      'secenekler': ['Windows', 'Linux', 'MacOS', 'Pardus'],
       'oylar': [0, 0, 0, 0],
       'oyVerildi': false,
       'secilenSecenek': null,
-      'ikon': Icons.wb_sunny,
+      'ikon': Icons.computer,
       'renk': Colors.orange,
     },
     {
-      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
-      'secenekler': ['Futbol', 'Basketbol'],
-      'oylar': [0, 0],
-      'oyVerildi': false,
-      'secilenSecenek': null,
-      'ikon': Icons.sports_soccer,
-      'renk': Colors.blue,
+        'soru': 'Hangi sosyal medya platformunu daha sık kullanıyorsunuz?',
+        'secenekler': ['Instagram', 'Twitter (X)', 'TikTok', 'Facebook'],
+        'oylar': [0, 0, 0, 0],
+        'ikon': Icons.public,
+        'renk': Colors.purple,
     },
   ];
 
