@@ -12,25 +12,25 @@ class StatisticsPageState extends State<StatisticsPage> {
   // Ancak burada sadece gösterim amaçlı olduğu için 'oyVerildi' ve 'secilenSecenek' alanları yok
   List<Map<String, dynamic>> surveys = [
     {
-      'soru': 'Aşağıdaki meyvelerden hangisini daha çok seversiniz?',
-      'secenekler': ['Elma', 'Muz', 'Çilek'],
+      'soru': 'Cumhurbaşkanlığı seçiminde kimi destekliyorsunuz?',
+      'secenekler': ['A Kişisi', 'B Kişisi', 'C Kişisi'],
       'oylar': [0, 0, 0],
-      'ikon': Icons.food_bank,
+      'ikon': Icons.how_to_vote,
       'renk': Colors.green,
     },
     {
-      'soru': 'En sevdiğiniz mevsim hangisidir?',
-      'secenekler': ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
+      'soru': 'Hangi işletim sistemini tercih ediyorsunuz?',
+      'secenekler': ['Windows', 'Linux', 'MacOS', 'Pardus'],
       'oylar': [0, 0, 0, 0],
-      'ikon': Icons.wb_sunny,
+      'ikon': Icons.computer,
       'renk': Colors.orange,
     },
     {
-      'soru': 'Aşağıdaki sporlardan hangisini daha çok seversiniz?',
-      'secenekler': ['Futbol', 'Basketbol'],
-      'oylar': [0, 0],
-      'ikon': Icons.sports_soccer,
-      'renk': Colors.blue,
+      'soru': 'Hangi sosyal medya platformunu daha sık kullanıyorsunuz?',
+      'secenekler': ['Instagram', 'Twitter (X)', 'TikTok', 'Facebook'],
+      'oylar': [0, 0, 0, 0],
+      'ikon': Icons.public,
+      'renk': Colors.purple,
     },
   ];
 
@@ -58,13 +58,35 @@ class StatisticsPageState extends State<StatisticsPage> {
             oylar.add(int.parse(oy));
           }
 
-          // Anket verisini güncel oy sayılarıyla güncelle
-          setState(() {
-            surveys[i]['oylar'] = oylar;
-          });
+          // Seçenek sayısı ve oy sayısı uyuşması için kontrol
+          if (oylar.length == surveys[i]['secenekler'].length) {
+            // Anket verisini güncel oy sayılarıyla güncelle
+            setState(() {
+              surveys[i]['oylar'] = oylar;
+            });
+          } else {
+            // Sayılar uyuşmuyorsa, seçenek sayısına göre yeni bir oy dizisi oluştur
+            setState(() {
+              List<int> yeniOylar = List.filled(surveys[i]['secenekler'].length, 0);
+              // Mevcut oyları yeni diziye kopyala (sınırları aşmayacak şekilde)
+              for (int j = 0; j < oylar.length && j < yeniOylar.length; j++) {
+                yeniOylar[j] = oylar[j];
+              }
+              surveys[i]['oylar'] = yeniOylar;
+            });
+          }
         } catch (e) {
           print("Oy verilerini yüklerken hata: $e");
+          // Hata durumunda varsayılan sıfır oyları kullan
+          setState(() {
+            surveys[i]['oylar'] = List.filled(surveys[i]['secenekler'].length, 0);
+          });
         }
+      } else {
+        // Veri yoksa, seçenek sayısına göre sıfır oylar oluştur
+        setState(() {
+          surveys[i]['oylar'] = List.filled(surveys[i]['secenekler'].length, 0);
+        });
       }
     }
   }
@@ -151,10 +173,19 @@ class StatisticsPageState extends State<StatisticsPage> {
   List<Widget> createOptionResults(
       Map<String, dynamic> survey, int totalVotes) {
     List<Widget> results = [];
+    
+    // Oylar listesinin seçeneklerle aynı uzunlukta olduğunu kontrol et
+    List<dynamic> secenekler = survey['secenekler'];
+    List<dynamic> oylar = survey['oylar'];
+    
+    // Dizilerin uzunluklarını uyumlu hale getir
+    if (oylar.length != secenekler.length) {
+      oylar = List.filled(secenekler.length, 0);
+    }
 
-    for (int i = 0; i < survey['secenekler'].length; i++) {
-      String option = survey['secenekler'][i];
-      int voteCount = survey['oylar'][i];
+    for (int i = 0; i < secenekler.length; i++) {
+      String option = secenekler[i];
+      int voteCount = i < oylar.length ? oylar[i] : 0;
 
       // Seçeneğin aldığı oyun toplam oylara oranını yüzde olarak hesapla
       // Toplam oy yoksa yüzde sıfır olacaktır
